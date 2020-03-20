@@ -16,34 +16,34 @@ class xMattersLibraries(object):
 
     def getLibraries(self, id, filter='', retry=0):
 
-        defName = "getLibraries "
+        def_name = "getLibraries "
 
         try:
-            self.log.debug(defName + "Getting Libraries for Plan: " + id)
+            self.log.debug(def_name + "Getting Libraries for Plan: " + id)
             url = "/api/xm/1/plans/" + urllib.parse.quote(id, safe='') + "/shared-libraries" + filter
 
             response = self.request.get(url)
 
             if xMattersAPI.statusCodeSuccess(response.status_code):
-                jsonStr = response.json()
-                self.log.debug(defName + json.dumps(jsonStr))
-                self.log.debug(defName + "Retrieved libraries" + str(response.content))
+                json_str = response.json()
+                self.log.debug(def_name + json.dumps(json_str))
+                self.log.debug(def_name + "Retrieved libraries" + str(response.content))
             elif response.status_code == 404:
-                self.log.debug(defName + "The plan could not be found: " + id)
-                jsonStr = None
+                self.log.debug(def_name + "The plan could not be found: " + id)
+                json_str = None
             elif xMattersAPI.tooManyRequests(response.status_code):
-                self.log.error(defName + "Status Code: "+str(response.status_code)+". Too many requests.")
+                self.log.error(def_name + "Status Code: "+str(response.status_code)+". Too many requests.")
                 if retry < 3:
                     retry = retry+1
-                    self.log.error(defName + "Retrying, retry count: " + str(retry))
-                    return self.getPlan(id, filter, retry)
+                    self.log.error(def_name + "Retrying, retry count: " + str(retry))
+                    return self.getLibraries(id, filter, retry)
             else:
-                self.log.debug(defName + "Error occurred while retrieving Plan: " + id + " Response: " + str(response.content))
-                jsonStr = None
+                self.log.debug(def_name + "Error occurred while retrieving Plan: " + id + " Response: " + str(response.content))
+                json_str = None
         except Exception as e:
-            self.log.error(defName + "Unexpected exception:" + str(e))
-            jsonStr = None
+            self.log.error(def_name + "Unexpected exception:" + str(e))
+            json_str = None
 
-        self.log.debug(defName + "Returning response: " + str(jsonStr))
+        self.log.debug(def_name + "Returning response: " + str(json_str))
 
-        return jsonStr
+        return json_str

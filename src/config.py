@@ -1,7 +1,7 @@
 environment = {
-    "url": "https://matthenry.cs1.xmatters.com",
-    "username": "rest",
-    "password": "pass"
+    "url": "https://<instance>.xmatters.com",
+    "username": "username",
+    "password": "password"
 }
 
 file = {

@@ -13,5 +13,4 @@ from .rest.dynamic_teams import *
 from .rest.collection import *
 
 from .util.column import *
-from .util.structure import *
 from .util.timecalc import *

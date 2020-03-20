@@ -10,24 +10,27 @@ from logging.handlers import RotatingFileHandler
 
 # main process
 def main() -> object:
+
+    """the main process that can be leveraged for calling other modules to intitiate procesess, etc. below are examples of the xMatters REST API with pyxmatters"""
+
     """xMattersPerson Examples:"""
-    for i in range(10):
-        xm_person.createPerson({'targetName': 'atarget_' + str(i), 'firstName': 'atarget_' + str(i), 'lastName': 'atarget_' + str(i),
-             'roles': ['Group Supervisor']})
-    xm_person.getPerson('atarget_0')
-    xm_person.getPeopleCollection()
-    xm_person.removePerson('atarget_0')
+    # for i in range(50):
+    #     xm_person.createPerson({'targetName': 'target_' + str(i), 'firstName': 'target_' + str(i), 'lastName': 'target_' + str(i),
+    #          'roles': ['Group Supervisor']})
+    # xm_person.getPerson('atarget_0')
+    # xm_person.getPeopleCollection()
+    # xm_person.removePerson('atarget_0')
 
     """xMattersDevice Examples:"""
     # user_id = xm_person.getPerson('atarget_1')['id'] # needed for device creation
     # xm_device.createDevice({'name': 'Work Email', 'emailAddress': 'user@xmatters.com', 'deviceType': 'EMAIL', 'owner': user_id})
-    # GET, modify, and remove operations also available
+    # xm_device.getDevices()
 
     """xMattersGroup Examples:"""
     # group = xm_group.createGroup({'targetName': 'Test Group'})
     # xm_group.modifyGroup({'id': group['id'], 'status': 'INACTIVE'})
     # xm_group.getGroup('Test Group')
-    # xm_group.getGroups()
+    # xm_group.getGroupCollection()
     # xm_group.removeGroup('Test Group')
 
     """xMattersCollection Examples:"""
@@ -35,12 +38,16 @@ def main() -> object:
     # for x in range(50):
     #     data.append({'targetName': 'target_'+str(x)})
     # response = xm_collection.createGroupsCollection(data, max_threads)
-    # data = xm_collection.removeGroupsCollection(data, max_threads)
+    # log.info(response['succeed'])
+    # log.info(response['fail'])
+    # xm_collection.removeGroupsCollection(data, max_threads)
 
-    # data = []
-    # for x in range(50):
-    #     data.append({'name': 'target_'+str(x), 'shift':'Default Shift', 'member': 'TestUser'})
-    # response = xm_collection.addMemberToShiftCollection(data, max_threads)
+    data = []
+    for x in range(50):
+        data.append({'name': 'target_'+str(x), 'shift':'Default Shift', 'member': 'target_'+str(x)})
+    response = xm_collection.addMemberToShiftCollection(data, max_threads)
+    log.info(response['succeed'])
+    log.info(response['fail'])
 
     """xMattersRoster Examples:"""
     # xm_roster.addMemberToRoster('Test Group', 'TestUser')
@@ -76,8 +83,7 @@ if __name__ == "__main__":
     log.info("Starting Process: " + time_util.formatDateTimeNow(start))
 
     # instantiate classes
-    environment = xmatters.xMattersAPI(config.environment["url"], config.environment["username"],
-                                       config.environment["password"])
+    environment = xmatters.xMattersAPI(config.environment["url"], config.environment["username"], config.environment["password"])
     xm_person = xmatters.xMattersPerson(environment)
     xm_device = xmatters.xMattersDevice(environment)
     xm_group = xmatters.xMattersGroup(environment)
