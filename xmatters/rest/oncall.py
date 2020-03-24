@@ -6,6 +6,7 @@ import json
 # # local module
 from .api import xMattersAPI
 
+
 class xMattersOnCall(object):
 
     # constructor
@@ -39,7 +40,7 @@ class xMattersOnCall(object):
                         member_link = None
                         while continue_to_get_members:
 
-                            if not member_link:  #  only execute below on first iteration
+                            if not member_link:  # only execute below on first iteration
                                 members = self.__getOnCallMembers(item["members"]["links"]["next"])
                             else:  # for all other iterations
                                 members = self.__getOnCallMembers(member_link)
@@ -64,7 +65,7 @@ class xMattersOnCall(object):
                 p = p + count
 
                 if p < total:
-                    group = self.__getOnCallGroups("?offset="+str(p)+"&limit=1000"+filter)
+                    groups = self.__getOnCallGroups("?offset=" + str(p) + "&limit=1000" + filter)
                     count = groups["count"]
 
         except Exception as e:
@@ -74,7 +75,7 @@ class xMattersOnCall(object):
         self.log.debug(def_name + "Returning OnCall: " + json.dumps(oncall))
 
         return oncall
-    
+
     # private method
     def __getOnCallGroups(self, filter="?offset=0&limit=1000", retry=0):
 
@@ -92,9 +93,9 @@ class xMattersOnCall(object):
                 self.log.debug(def_name + json.dumps(json_str))
                 self.log.debug(def_name + "Retrieved OnCall: " + str(response.content))
             elif xMattersAPI.tooManyRequests(response.status_code):
-                self.log.error(def_name + "Status Code: "+str(response.status_code)+". Too many requests.")
+                self.log.error(def_name + "Status Code: " + str(response.status_code) + ". Too many requests.")
                 if retry < 3:
-                    retry = retry+1
+                    retry = retry + 1
                     self.log.error(def_name + "Retrying, retry count: " + str(retry))
                     return self.__getOnCallGroups(filter, retry)
             else:
@@ -125,9 +126,9 @@ class xMattersOnCall(object):
                 self.log.debug(def_name + json.dumps(json_str))
                 self.log.debug(def_name + "Retrieved OnCall: " + str(response.content))
             elif xMattersAPI.tooManyRequests(response.status_code):
-                self.log.error(def_name + "Status Code: "+str(response.status_code)+". Too many requests.")
+                self.log.error(def_name + "Status Code: " + str(response.status_code) + ". Too many requests.")
                 if retry < 3:
-                    retry = retry+1
+                    retry = retry + 1
                     self.log.error(def_name + "Retrying, retry count: " + str(retry))
                     return self.__getOnCallMembers(filter, retry)
             else:
@@ -152,7 +153,8 @@ class xMattersOnCall(object):
                 if filter_str == "":
                     new_filter = new_filter + filter_str
                 else:
-                    if filter_str.find("membersPerShift") == -1 and filter_str.find("offset") == -1 and filter_str.find("limit") == -1:
+                    if filter_str.find("membersPerShift") == -1 and filter_str.find("offset") == -1 and filter_str.find(
+                            "limit") == -1:
                         new_filter = new_filter + "&" + filter_str
         except Exception as e:
             self.log.error(def_name + "Unexpected exception: " + str(e))
@@ -162,9 +164,8 @@ class xMattersOnCall(object):
     def __hasNextLink(self, obj):
         has = True
         try:
-            # an exception will throw if this column header doesn"t exist
+            # an exception will throw if it doesn't exist
             obj["links"]["next"]
         except:
-            # when exception is thrown we"ll set this to an empty string
             has = False
         return has
