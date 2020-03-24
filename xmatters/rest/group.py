@@ -68,7 +68,7 @@ class xMattersGroup(object):
                 if retry < 3:
                     retry = retry+1
                     self.log.error(def_name + "Retrying, retry count: " + str(retry))
-                    return self.getGroups(name, fitler, retry)
+                    return self.getGroups(filter, retry)
             else:
                 self.log.debug(def_name + "Error occurred while retrieving Groups. Response: " + str(response.content))
                 json_str = None
@@ -195,6 +195,9 @@ class xMattersGroup(object):
         def_name = "getGroupCollection "
 
         try:
+            filter = self.__parseFilter(filter)
+            print()
+
             self.log.debug(def_name + "Getting Groups Collection, with filter: " + filter)
 
             group = self.getGroups("?offset=0&limit=1000" + filter)
@@ -226,3 +229,19 @@ class xMattersGroup(object):
         self.log.debug(def_name + "Returning groups: " + json.dumps(groups))
 
         return groups
+
+    def __parseFilter(self, filter=''):
+        def_name = "__parseFilter "
+        new_filter = ''
+
+        try:
+            for filter_str in filter.split('&'):
+                if filter_str == '':
+                    new_filter = new_filter + filter_str
+                else:
+                    if filter_str.find('offset') == -1 and filter_str.find('limit') == -1:
+                        new_filter = new_filter + '&' + filter_str
+        except Exception as e:
+            self.log.error(def_name + 'Unexpected exception: ' + str(e))
+
+        return new_filter

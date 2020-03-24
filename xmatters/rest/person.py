@@ -205,6 +205,7 @@ class xMattersPerson(object):
         def_name = "getPeopleCollection "
 
         try:
+            filter = self.__parseFilter(filter)
             self.log.debug(def_name + "Getting People Collection, with filter: " + filter)
 
             people = self.getPeople("?offset=0&limit=1000" + filter)
@@ -236,3 +237,19 @@ class xMattersPerson(object):
         self.log.debug(def_name + "Returning users: " + json.dumps(users))
 
         return users
+
+    def __parseFilter(self, filter=''):
+        def_name = "__parseFilter "
+        new_filter = ''
+
+        try:
+            for filter_str in filter.split('&'):
+                if filter_str == '':
+                    new_filter = new_filter + filter_str
+                else:
+                    if filter_str.find('offset') == -1 and filter_str.find('limit') == -1:
+                        new_filter = new_filter + '&' + filter_str
+        except Exception as e:
+            self.log.error(def_name + 'Unexpected exception: ' + str(e))
+
+        return new_filter

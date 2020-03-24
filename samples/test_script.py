@@ -91,6 +91,7 @@ if __name__ == "__main__":
     xm_roster = xmatters.xMattersRoster(environment)
     xm_shift = xmatters.xMattersShift(environment)
     xm_site = xmatters.xMattersSite(environment)
+    xm_on_call = xmatters.xMattersOnCall(environment)
 
     max_threads = 15
 

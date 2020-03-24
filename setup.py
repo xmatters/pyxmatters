@@ -1,7 +1,7 @@
 from setuptools import setup
 
 setup(name='pyxmatters',
-      version='0.1.2.8',
+      version='0.1.3.0',
       description='pyxmatters',
       author="Matt Henry",
       author_email="mhenry@xmatters.com",

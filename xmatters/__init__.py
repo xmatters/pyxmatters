@@ -8,6 +8,7 @@ from .rest.roster import *
 from .rest.shift import *
 from .rest.site import *
 from .rest.dynamic_teams import *
+from .rest.oncall import *
 
 # the collection must always be at the bottom since it references other modules
 from .rest.collection import *
