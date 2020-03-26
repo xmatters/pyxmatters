@@ -14,14 +14,36 @@ Reference:
 
 ## Overview of the pyxmatters package
 
-### pyxmatters/rest
+### /pyxmatters/rest
 This directory provides user, device, group, and site rest api capabilities.
 
-### pyxmatters/util
+### /pyxmatters/util
 This directory contains misc. utilities that provide benefits to users executing ETL processes with pyxmatters.
 
+#### /pyxmatters/util/column.py
+column.py is a class responsible for reading csv files. The intent of this class is to treat a csv like a sql db.
+
+#### /pyxmatters/util/timecalc.py
+timecalc.py is a helper class for displaying start and end durations of a running process
+```
+import xmatters
+import time
+time_util = xmatters.TimeCalc()
+
+# time start
+start = time_util.getTimeNow()
+print("Starting Process: " + time_util.formatDateTimeNow(start))
+
+# sleep for one second
+time.sleep(1)
+
+# time end
+end = time_util.getTimeNow()
+print("Process Duration: " + time_util.getDiff(end, start))
+```
+
 ## Working Projects
-For implementation in a working project see: https://github.com/matthewhenry1/integrator-py
+For implementation in a working project see: https://github.com/matthewhenry1/integrator_py
 
 ## Notes on managing the package
 
