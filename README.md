@@ -2,12 +2,12 @@
 The pyxmatters package provides a rest api interface with xMatters. There are also file reading capabilities to assist with synchronizing data.
 
 ## Install, Upgrades, and use of pyxmatters
-It is **strongly** recommended to install the pyxmatters package locally from GitHub. The direct pip installation documented below will install locally, but for ease of management place the `xmatters` directory in the working source folder for your script.
+It is **strongly** recommended to install the pyxmatters package locally from GitHub. The direct pip installation documented below will install locally, but for ease of management place the `xmatters` directory in the working source folder of your script.
 
-To Install, navigate to the terminal and enter:
+To Install via pip, navigate to the terminal and enter:
 * `pip3 install pyxmatters`
 
-To Upgrade, navigate to terminal and enter:
+To Upgrade via pip, navigate to terminal and enter:
 * `sudo pip3 install --upgrade --force-reinstall pyxmatters`
 
 ## Overview of the pyxmatters package
@@ -226,7 +226,7 @@ To test locally uninstall the package by:
 * For MacOS users: Recursively remove compiled files prior to uploading to GitHub
     * From within src directory (i.e. `/pyxmatters`) execute the following: `find . | grep -E "(__pycache__|\.pyc|\.pyo$)" | xargs rm -rf`
 
-## Notes on managing the package
+## Notes For Contributors
 
 ### Uploading
 `wheel` and `twine` are required for packaging and uploading:
