@@ -10,10 +10,10 @@ To Upgrade, navigate to terminal and enter:
 
 ## Overview of the pyxmatters package
 
-### /pyxmatters/rest
+### pyxmatters/rest
 This directory provides user, device, group, and site rest api capabilities.
 
-#### /pyxmatters/rest/person.py
+#### pyxmatters/rest/person.py
 ```
 import xmatters
 import logging
@@ -31,7 +31,7 @@ xm_person.get_people_collection()
 xm_person.remove_person('username')
 ```
 
-#### /pyxmatters/rest/device.py
+#### pyxmatters/rest/device.py
 
 ```
 import xmatters
@@ -50,7 +50,7 @@ xm_device.get_devices()
 # other options available as well
 ```
 
-#### /pyxmatters/rest/group.py
+#### pyxmatters/rest/group.py
 ```
 import xmatters
 import logging
@@ -68,7 +68,7 @@ xm_group.get_group_collection()
 xm_group.remove_group('Test Group')
 ```
 
-#### /pyxmatters/rest/shift.py
+#### pyxmatters/rest/shift.py
 
 ```
 import xmatters
@@ -87,7 +87,7 @@ xm_shift.get_shift('Test Group', 'Default Shift')
 xm_shift.delete_shift('Test Group', 'Default Shift')
 ```
 
-#### /pyxmatters/rest/roster.py
+#### pyxmatters/rest/roster.py
 
 ```
 import xmatters
@@ -105,7 +105,7 @@ xm_roster.remove_member_from_roster('Test Group', 'username')
 xm_roster.get_roster_collection()
 ```
 
-#### /pyxmatters/rest/site.py
+#### pyxmatters/rest/site.py
 
 ```
 import xmatters
@@ -123,13 +123,13 @@ xm_site.get_sites()
 xm_site.modify_site({'id': site['id'], 'timezone': 'US/Pacific'})
 ```
 
-### /pyxmatters/util
+### pyxmatters/util
 This directory contains misc. utilities that provide benefits to users executing ETL processes with pyxmatters.
 
-#### /pyxmatters/util/column.py
+#### pyxmatters/util/column.py
 column.py is a class responsible for reading csv files. The intent of this class is to treat a csv like a sql db.
 
-#### /pyxmatters/util/timecalc.py
+#### pyxmatters/util/timecalc.py
 timecalc.py is a helper class for displaying start and end durations of a running process
 ```
 import xmatters
@@ -147,9 +147,17 @@ time.sleep(1)
 end = time_util.get_time_now()
 print("Process Duration: " + time_util.get_diff(end, start))
 ```
-
 ## Working Projects
 For implementation in a working project see: https://github.com/matthewhenry1/integrator_py
+
+### Testing locally
+To test locally uninstall the package by:
+* `sudo pip3 uninstall pyxmatters`
+* add `xmatters` to the local directory in which you want to test and then import `xmatters` as you normally would to begin testing
+
+## Miscellaneous Notes
+* For MacOS users: Recursively remove compiled files prior to uploading to GitHub
+    * From within src directory (i.e. `/pyxmatters`) execute the following: `find . | grep -E "(__pycache__|\.pyc|\.pyo$)" | xargs rm -rf`
 
 ## Notes on managing the package
 
@@ -166,13 +174,3 @@ Procedure:
 References:
 * https://pypi.org/project/twine/
 * https://stackoverflow.com/questions/52016336/how-to-upload-new-versions-of-project-to-pypi-with-twine
-
-### Testing locally
-To test locally uninstall the package by:
-* `sudo pip3 uninstall pyxmatters`
-* add `pyxmatters` to the local directory in which you want to test and then import `pyxmatters` as you normally would
-* begin testing
-
-## Miscellaneous Notes
-* For MacOS users: Recursively remove compiled files prior to uploading to GitHub
-    * From within src directory (i.e. `/pyxmatters`) execute the following: `find . | grep -E "(__pycache__|\.pyc|\.pyo$)" | xargs rm -rf`
