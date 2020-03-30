@@ -1,12 +1,11 @@
 # pyxmatters
 The pyxmatters package provides a rest api interface with xMatters. There are also file reading capabilities to assist with synchronizing data.
 
-## Install pyxmatters
-Navigate to the cmd and enter:
+## Install and Upgrades of pyxmatters
+To Install, navigate to the terminal and enter:
 * `pip3 install pyxmatters`
 
-## For Upgrades of pyxmatters
-Navigate to the cmd and enter:
+To Upgrade, navigate to terminal and enter:
 * `sudo pip3 install --upgrade --force-reinstall pyxmatters`
 
 ## Overview of the pyxmatters package
