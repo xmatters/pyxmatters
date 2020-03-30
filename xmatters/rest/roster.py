@@ -8,140 +8,72 @@ class xMattersRoster(object):
 
     # constructor
     def __init__(self, request):
-        self.request = request
-        self.log = logging.getLogger(__name__)
+        self.__request = request
+        self.__log = logging.getLogger(__name__)
 
-
-    # groupId = (id) or name (targetName) of the group.
-
-    def addMemberToRoster(self, groupId, memberId, retry=0):
-
-        def_name = "addMemberToRoster "
-
+    # group_id = (id) or name (targetName) of the group.
+    def add_member_to_roster(self, group_id, member_id):
+        def_name = "add_member_to_roster "
         try:
-            url = "/api/xm/1/groups/" + urllib.parse.quote(groupId, safe='') + "/members"
 
             data = {
-                    "id": str(memberId),
-                    "recipientType": "PERSON"
+                "id": str(member_id),
+                "recipientType": "PERSON"
             }
 
-            response = self.request.post(data, url)
-            self.log.debug(def_name + "adding member "+memberId+" to group roster " + groupId + " with " + str(data))
-            if xMattersAPI.statusCodeSuccess(response.status_code):
-                json_str = response.json()
-                self.log.debug(def_name + json.dumps(json_str))
-                self.log.debug(def_name + "Added member: " + json_str["targetName"])
-            elif xMattersAPI.tooManyRequests(response.status_code):
-                self.log.error(def_name + "Status Code: "+str(response.status_code)+". Too many requests.")
-                if retry < 3:
-                    retry = retry+1
-                    self.log.error(def_name + "Retrying, retry count: " + str(retry))
-                    return self.addMemberToRoster(groupId, memberId, retry)
-            elif response.status_code == 404:
-                self.log.error(
-                    def_name + "Failed to add member: " + memberId + " to Group Roster: "+memberId +". Group or User does not exist. HTTP Response: " + str(response.content))
-                json_str = None
-            else:
-                self.log.error(
-                    def_name + "Failed to add member: " + memberId + " Response: " + str(response.content))
-                json_str = None
+            response = self.__request.post(data, "/api/xm/1/groups/" + urllib.parse.quote(group_id, safe='') + "/members")
+
         except Exception as e:
-            self.log.error(
+            self.__log.error(
                 def_name + "Unexpected exception:" + str(e))
-            json_str = None
+            response = None
 
-        self.log.debug(def_name + "Returning response: " + str(json_str))
+        self.__log.debug(def_name + "Returning response: " + str(response))
 
-        return json_str
+        return response
 
-
-    # groupId = (id) or name (targetName) of the group.
-
-    def removeMemberFromRoster(self, groupId, memberId, retry=0):
-
-        def_name = "removeMemberFromRoster "
-
+    # group_id = (id) or name (targetName) of the group.
+    def remove_member_from_roster(self, group_id, member_id):
+        def_name = "remove_member_from_roster "
         try:
-            self.log.debug(def_name + "removing member "+memberId+" from group roster " + groupId)
-            url = "/api/xm/1/groups/" + urllib.parse.quote(groupId, safe='') + "/members/"+urllib.parse.quote(memberId, safe='')
+            self.__log.debug(def_name + "removing member "+member_id+" from group roster " + group_id)
+            response = self.__request.delete("/api/xm/1/groups/" + urllib.parse.quote(group_id, safe='') + "/members/"+urllib.parse.quote(member_id, safe=''))
 
-            response = self.request.delete(url)
-
-            if xMattersAPI.statusCodeSuccess(response.status_code):
-                json_str = response.json()
-                self.log.debug(
-                    def_name + json.dumps(json_str))
-                self.log.debug(
-                    def_name + "Removed member: " + json_str["member"]["targetName"])
-            elif xMattersAPI.tooManyRequests(response.status_code):
-                self.log.error(def_name + "Status Code: "+str(response.status_code)+". Too many requests.")
-                if retry < 3:
-                    retry = retry+1
-                    self.log.error(def_name + "Retrying, retry count: " + str(retry))
-                    return self.removeMemberFromRoster(groupId, memberId, retry)
-            elif response.status_code == 404:
-                self.log.error(
-                    def_name + "Failed to remove member: " + memberId + " from Group Roster: "+memberId +". User does not exist. HTTP Response: " + str(response.content))
-                json_str = None
-            else:
-                self.log.error(
-                    def_name + "Failed to add member: " + name + " Response: " + str(response.content))
-                json_str = None
         except Exception as e:
-            self.log.error(
+            self.__log.error(
                 def_name + "Unexpected exception:" + str(e))
-            json_str = None
+            response = None
 
-        self.log.debug(def_name + "Returning response: " + str(json_str))
+        self.__log.debug(def_name + "Returning response: " + str(response))
 
-        return json_str
+        return response
 
-    # groupId = (id) or name (targetName) of the group.
+    # group_id = (id) or name (targetName) of the group.
 
-    def getRoster(self, groupId, filter="&offset=0&limit=1000", retry=0):
-
-        def_name = "getRoster "
-
+    def get_roster(self, group_id, url_filter="&offset=0&limit=1000"):
+        def_name = "get_roster "
         try:
-            self.log.debug(def_name + "Getting Group Roster: " + groupId)
-            url = "/api/xm/1/groups/" + urllib.parse.quote(groupId, safe='') + "/members?embed=shifts" +filter
+            self.__log.debug(def_name + "Getting Group Roster: " + group_id)
+            response = self.__request.get("/api/xm/1/groups/" + urllib.parse.quote(group_id, safe='') + "/members?embed=shifts" +url_filter)
 
-            response = self.request.get(url)
-
-            if xMattersAPI.statusCodeSuccess(response.status_code):
-                json_str = response.json()
-                self.log.debug(def_name + " Retrieved Group Roster: "+ json.dumps(json_str))
-            elif xMattersAPI.tooManyRequests(response.status_code):
-                self.log.error(def_name + "Status Code: "+str(response.status_code)+". Too many requests.")
-                if retry < 3:
-                    retry = retry+1
-                    self.log.error(def_name + "Retrying, retry count: " + str(retry))
-                    return self.getRoster(groupId, filter, retry)
-            else:
-                self.log.error(def_name + "Failed retrieving Group Roster: " + groupId + " Response: " + str(response.content))
-                json_str = None
         except Exception as e:
-            self.log.error(
+            self.__log.error(
                 def_name + "Unexpected exception:" + str(e))
-            json_str = None
+            response = None
 
-        self.log.debug(def_name + "Returning response: " + str(json_str))
+        self.__log.debug(def_name + "Returning response: " + str(response))
 
-        return json_str
+        return response
 
-    # groupId = (id) or name (targetName) of the group.
-    def getRosterCollection(self, groupId):
-
-        def_name = "getRosterCollection "
-
+    # group_id = (id) or name (targetName) of the group.
+    def get_roster_collection(self, group_id):
+        def_name = "get_roster_collection "
         try:
-            self.log.debug(def_name + "Getting Group Roster Collection: " + groupId)
-
-            roster = self.getRoster(groupId, "&offset=0&limit=1000")
+            self.__log.debug(def_name + "Getting Group Roster Collection: " + group_id)
+            roster = self.get_roster(group_id, "&offset=0&limit=1000")
 
             if not roster:
-                self.log.debug(def_name + "Group Not Retrieved: " + groupId)
+                self.__log.debug(def_name + "Group Not Retrieved: " + group_id)
                 return None
 
             total = roster["total"]
@@ -157,13 +89,13 @@ class xMattersRoster(object):
                 p = p + count
 
                 if p < total:
-                    roster = self.getRoster(groupId, "&offset="+str(p)+"&limit=1000")
+                    roster = self.get_roster(group_id, "&offset="+str(p)+"&limit=1000")
                     count = roster["count"]
 
         except Exception as e:
-            self.log.error(def_name + "Unexpected exception:" + str(e))
+            self.__log.error(def_name + "Unexpected exception:" + str(e))
             members = set()
 
-        self.log.debug(def_name + "Returning members: " + str(members))
+        self.__log.debug(def_name + "Returning members: " + str(members))
 
         return members

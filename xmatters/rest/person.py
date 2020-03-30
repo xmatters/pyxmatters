@@ -11,110 +11,50 @@ class xMattersPerson(object):
 
     # constructor
     def __init__(self, request):
-        self.request = request
-        self.log = logging.getLogger(__name__)
+        self.__request = request
+        self.__log = logging.getLogger(__name__)
 
-    def getPerson(self, id, filter="?embed=roles,supervisors", retry=0):
-
-        def_name = "getPerson "
-
+    def get_person(self, person_id, url_filter="?embed=roles,supervisors"):
+        def_name = "get_person "
         try:
-            self.log.debug(def_name + "Getting Person: " + id)
-            url = "/api/xm/1/people/" + urllib.parse.quote(id, safe='') + filter
+            self.__log.debug(def_name + "Getting Person: " + person_id)
+            response = self.__request.get("/api/xm/1/people/" + urllib.parse.quote(person_id, safe='') + url_filter)
 
-            response = self.request.get(url)
-
-            if xMattersAPI.statusCodeSuccess(response.status_code):
-                json_str = response.json()
-                self.log.debug(def_name + json.dumps(json_str))
-                self.log.debug(def_name + "Retrieved person: " + json_str["targetName"] + ". ID = " + json_str["id"])
-            elif response.status_code == 404:
-                self.log.debug(def_name + "The person could not be found: " + id)
-                json_str = None
-            elif xMattersAPI.tooManyRequests(response.status_code):
-                self.log.error(def_name + "Status Code: " + str(response.status_code) + ". Too many requests.")
-                if retry < 3:
-                    retry = retry + 1
-                    self.log.error(def_name + "Retrying, retry count: " + str(retry))
-                    return self.getPerson(id, filter, retry)
-            else:
-                self.log.error(def_name + "Error occurred while retrieving Person: " + id + " Response: " + str(response.content))
-                json_str = None
         except Exception as e:
-            self.log.error(def_name + "Unexpected exception:" + str(e))
-            json_str = None
+            self.__log.error(def_name + "Unexpected exception:" + str(e))
+            response = None
 
-        self.log.debug(def_name + "Returning response: " + str(json_str))
+        self.__log.debug(def_name + "Returning response: " + str(response))
 
-        return json_str
+        return response
 
-    def getPeople(self, filter="?embed=roles,devices&offset=0&limit=1000", retry=0):
-
-        def_name = "getPeople "
-
+    def get_people(self, url_filter="?embed=roles,devices&offset=0&limit=1000"):
+        def_name = "get_people "
         try:
-            self.log.debug(def_name + "Getting People")
-            url = "/api/xm/1/people" + filter
+            self.__log.debug(def_name + "Getting People")
+            response = self.__request.get("/api/xm/1/people" + url_filter)
 
-            response = self.request.get(url)
-
-            if xMattersAPI.statusCodeSuccess(response.status_code):
-                json_str = response.json()
-                self.log.debug(def_name + json.dumps(json_str))
-                self.log.debug(def_name + "Retrieved people: " + str(response.content))
-            elif xMattersAPI.tooManyRequests(response.status_code):
-                self.log.error(def_name + "Status Code: " + str(response.status_code) + ". Too many requests.")
-                if retry < 3:
-                    retry = retry + 1
-                    self.log.error(def_name + "Retrying, retry count: " + str(retry))
-                    return self.getPeople(filter, retry)
-            else:
-                self.log.error(def_name + "Error occurred while retrieving People. Response: " + str(response.content))
-                json_str = None
         except Exception as e:
-            self.log.error(def_name + "Unexpected exception:" + str(e))
-            json_str = None
+            self.__log.error(def_name + "Unexpected exception:" + str(e))
+            response = None
 
-        self.log.debug(def_name + "Returning response: " + str(json_str))
+        self.__log.debug(def_name + "Returning response: " + str(response))
 
-        return json_str
+        return response
 
-    def createPerson(self, data, retry=0):
-
-        def_name = "createPerson "
-
+    def create_person(self, data):
+        def_name = "create_person "
         try:
-            url = "/api/xm/1/people/"
+            self.__log.debug(def_name + "Creating Person: " + data["targetName"] + " with " + str(data))
+            response = self.__request.post(data, "/api/xm/1/people/")
 
-            name = data["targetName"]
-            self.log.debug(def_name + "Creating Person: " + name + " with " + str(data))
-
-            response = self.request.post(data, url)
-
-            if xMattersAPI.statusCodeSuccess(response.status_code):
-                json_str = response.json()
-                self.log.debug(def_name + json.dumps(json_str))
-                self.log.debug(def_name + "Created Person: " + json_str["targetName"] + ". ID = " + json_str["id"])
-            elif response.status_code == 409:
-                self.log.debug(def_name + "Person already exists")
-                json_str = None
-            elif xMattersAPI.tooManyRequests(response.status_code):
-                self.log.error(def_name + "Status Code: " + str(response.status_code) + ". Too many requests.")
-                if retry < 3:
-                    retry = retry + 1
-                    self.log.error(def_name + "Retrying, retry count: " + str(retry))
-                    return self.createPerson(data, retry)
-            else:
-                self.log.error(
-                    def_name + "Error occurred while creating Person: " + name + " Response: " + str(response.content))
-                json_str = None
         except Exception as e:
-            self.log.error(def_name + "Unexpected exception:" + str(e))
-            json_str = None
+            self.__log.error(def_name + "Unexpected exception:" + str(e))
+            response = None
 
-        self.log.debug(def_name + "Returning response: " + str(json_str))
+        self.__log.debug(def_name + "Returning response: " + str(response))
 
-        return json_str
+        return response
 
     # Modify Person:
     #
@@ -125,93 +65,53 @@ class xMattersPerson(object):
     #
     # Reference: https://help.xmatters.com/xmapi/index.html#modify-a-person
 
-    def modifyPerson(self, data, retry=0):
-
-        def_name = "modifyPerson "
-
+    def modify_person(self, data):
+        def_name = "modify_person "
         try:
-            url = "/api/xm/1/people/"
+            self.__log.debug(def_name + "Modifying Person: " + data["id"] + " with " + str(data))
+            response = self.__request.post(data, "/api/xm/1/people/")
 
-            id = data["id"]
-            self.log.debug(def_name + "Modifying Person: " + id + " with " + str(data))
-
-            response = self.request.post(data, url)
-
-            if xMattersAPI.statusCodeSuccess(response.status_code):
-                json_str = response.json()
-                self.log.debug(def_name + json.dumps(json_str))
-                self.log.debug(def_name + "Modified Person: " + json_str["targetName"] + ". ID = " + json_str["id"])
-            elif xMattersAPI.tooManyRequests(response.status_code):
-                self.log.error(def_name + "Status Code: " + str(response.status_code) + ". Too many requests.")
-                if retry < 3:
-                    retry = retry + 1
-                    self.log.error(def_name + "Retrying, retry count: " + str(retry))
-                    return self.modifyPerson(data, retry)
-            else:
-                self.log.error(
-                    def_name + "Error occurred while Modifying Person: " + id + " Response: " + str(response.content))
-                json_str = None
         except Exception as e:
-            self.log.error(def_name + "Unexpected exception:" + str(e) + " with data: " + str(data))
-            json_str = None
+            self.__log.error(def_name + "Unexpected exception:" + str(e) + " with data: " + str(data))
+            response = None
 
-        self.log.debug(def_name + "Returning response: " + str(json_str))
+        self.__log.debug(def_name + "Returning response: " + str(response))
 
-        return json_str
+        return response
 
-    def removePerson(self, id, retry=0):
-        def_name = "removePerson "
-
+    def remove_person(self, person_id):
+        def_name = "remove_person "
         try:
-            self.log.debug(def_name + "Removing Person: " + id)
+            self.__log.debug(def_name + "Removing Person: " + person_id)
+            response = self.__request.delete("/api/xm/1/people/" + person_id)
 
-            url = "/api/xm/1/people/" + id
-
-            response = self.request.delete(url)
-
-            if xMattersAPI.statusCodeSuccess(response.status_code):
-                json_str = response.json()
-                self.log.debug(def_name + json.dumps(json_str))
-                self.log.debug(
-                    def_name + "Person removed: " + json_str["targetName"] + ". Response: " + str(response.content))
-            elif xMattersAPI.tooManyRequests(response.status_code):
-                self.log.error(def_name + "Status Code: " + str(response.status_code) + ". Too many requests.")
-                if retry < 3:
-                    retry = retry + 1
-                    self.log.error(def_name + "Retrying, retry count: " + str(retry))
-                    return self.removePerson(id, retry)
-            else:
-                self.log.error(
-                    def_name + "Error occurred while removing Person: " + id + " Response: " + str(response.content))
-                json_str = None
         except Exception as e:
-            self.log.error(def_name + "Unexpected exception:" + str(e))
-            json_str = None
+            self.__log.error(def_name + "Unexpected exception:" + str(e))
+            response = None
 
-        self.log.debug(def_name + "Returning response: " + str(json_str))
+        self.__log.debug(def_name + "Returning response: " + str(response))
 
-        return json_str
+        return response
 
-    def getPeopleIDs(self, supervisors):
+    def get_people_ids(self, supervisors):
         ids = []
         for supervisor in supervisors:
-            xmsupervisor = self.getPerson(supervisor)
+            xmsupervisor = self.get_person(supervisor)
             if xmsupervisor:
                 ids.append(xmsupervisor["id"])
 
         return ids
 
-    def getPeopleCollection(self, filter=''):
-        def_name = "getPeopleCollection "
-
+    def get_people_collection(self, url_filter=''):
+        def_name = "get_people_collection "
         try:
-            filter = self.__parseFilter(filter)
-            self.log.debug(def_name + "Getting People Collection, with filter: " + filter)
+            url_filter = self.__parse_filter(url_filter)
+            self.__log.debug(def_name + "Getting People Collection, with url_filter: " + url_filter)
 
-            people = self.getPeople("?offset=0&limit=1000" + filter)
+            people = self.get_people("?offset=0&limit=1000" + url_filter)
 
             if not people:
-                self.log.debug(def_name + "People Not Retrieved")
+                self.__log.debug(def_name + "People Not Retrieved")
                 return None
 
             total = people["total"]
@@ -227,29 +127,28 @@ class xMattersPerson(object):
                 p = p + count
 
                 if p < total:
-                    people = self.getPeople("?offset="+str(p)+"&limit=1000"+filter)
+                    people = self.get_people("?offset="+str(p)+"&limit=1000"+url_filter)
                     count = people["count"]
 
         except Exception as e:
-            self.log.error(def_name + "Unexpected exception: " + str(e))
+            self.__log.error(def_name + "Unexpected exception: " + str(e))
             users = []
 
-        self.log.debug(def_name + "Returning users: " + json.dumps(users))
+        self.__log.debug(def_name + "Returning users: " + json.dumps(users))
 
         return users
 
-    def __parseFilter(self, filter=''):
-        def_name = "__parseFilter "
+    def __parse_filter(self, url_filter=''):
+        def_name = "__parse_filter "
         new_filter = ''
-
         try:
-            for filter_str in filter.split('&'):
+            for filter_str in url_filter.split('&'):
                 if filter_str == '':
                     new_filter = new_filter + filter_str
                 else:
                     if filter_str.find('offset') == -1 and filter_str.find('limit') == -1:
                         new_filter = new_filter + '&' + filter_str
         except Exception as e:
-            self.log.error(def_name + 'Unexpected exception: ' + str(e))
+            self.__log.error(def_name + 'Unexpected exception: ' + str(e))
 
         return new_filter

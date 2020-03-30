@@ -2,13 +2,13 @@ import datetime
 
 class TimeCalc(object):
 
-    def getTimeNow(self):
+    def get_time_now(self):
         return datetime.datetime.now()
 
-    def formatDateTimeNow(self, time):
+    def format_date_time_now(self, time):
         return time.strftime("%m-%d-%Y %H:%M:%S")
 
-    def getDiff(self, end, start):
+    def get_diff(self, end, start):
         duration = (end-start)
 
         duration_in_s = duration.total_seconds()

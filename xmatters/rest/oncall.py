@@ -6,25 +6,24 @@ import json
 # # local module
 from .api import xMattersAPI
 
-
 class xMattersOnCall(object):
 
     # constructor
     def __init__(self, request):
-        self.request = request
-        self.log = logging.getLogger(__name__)
+        self.__request = request
+        self.__log = logging.getLogger(__name__)
 
-    def getOnCallCollection(self, filter=""):
+    def get_on_call_collection(self, url_filter=""):
 
-        def_name = "getOnCallCollection "
+        def_name = "get_on_call_collection "
         try:
-            filter = self.__parseFilter(filter)
-            self.log.debug(def_name + "Getting OnCall Collection, with filter: " + filter)
+            url_filter = self.__parse_filter(url_filter)
+            self.__log.debug(def_name + "Getting OnCall Collection, with filter: " + url_filter)
 
-            groups = self.__getOnCallGroups("?offset=0&limit=1000&membersPerShift=100" + filter)
+            groups = self.__get_on_call_groups("?offset=0&limit=1000&membersPerShift=100" + url_filter)
 
             if not groups:
-                self.log.debug(def_name + "OnCall Not Retrieved")
+                self.__log.debug(def_name + "OnCall Not Retrieved")
                 return None
 
             total = groups["total"]
@@ -35,22 +34,22 @@ class xMattersOnCall(object):
             while p < total:
                 for item in groups["data"]:
 
-                    if self.__hasNextLink(item["members"]):
+                    if self.__has_next_link(item["members"]):
                         continue_to_get_members = True
                         member_link = None
                         while continue_to_get_members:
 
-                            if not member_link:  # only execute below on first iteration
-                                members = self.__getOnCallMembers(item["members"]["links"]["next"])
+                            if not member_link:  #  only execute below on first iteration
+                                members = self.__get_on_call_members(item["members"]["links"]["next"])
                             else:  # for all other iterations
-                                members = self.__getOnCallMembers(member_link)
+                                members = self.__get_on_call_members(member_link)
 
                             if members:  # only execute if there are members to process
                                 for member in members["data"]:
                                     item["members"]["data"].append(member)
 
                                 # get next series
-                                if self.__hasNextLink(members):
+                                if self.__has_next_link(members):
                                     member_link = members["links"]["next"]
                                 else:
                                     continue_to_get_members = False
@@ -65,103 +64,69 @@ class xMattersOnCall(object):
                 p = p + count
 
                 if p < total:
-                    groups = self.__getOnCallGroups("?offset=" + str(p) + "&limit=1000" + filter)
+                    groups = self.__get_on_call_groups("?offset="+str(p)+"&limit=1000"+url_filter)
                     count = groups["count"]
 
         except Exception as e:
-            self.log.error(def_name + "Unexpected exception: " + str(e))
+            self.__log.error(def_name + "Unexpected exception: " + str(e))
             oncall = []
 
-        self.log.debug(def_name + "Returning OnCall: " + json.dumps(oncall))
+        self.__log.debug(def_name + "Returning OnCall: " + json.dumps(oncall))
 
         return oncall
-
+    
     # private method
-    def __getOnCallGroups(self, filter="?offset=0&limit=1000", retry=0):
+    def __get_on_call_groups(self, url_filter="?offset=0&limit=1000"):
 
-        def_name = "__getOnCallGroups "
+        def_name = "__get_on_call_groups "
 
         try:
-            self.log.debug(def_name + "Getting OnCall for Groups")
+            self.__log.debug(def_name + "Getting OnCall for Groups")
+            response = self.__request.get("/api/xm/1/on-call" + url_filter)
 
-            url = "/api/xm/1/on-call" + filter
-
-            response = self.request.get(url)
-
-            if xMattersAPI.statusCodeSuccess(response.status_code):
-                json_str = response.json()
-                self.log.debug(def_name + json.dumps(json_str))
-                self.log.debug(def_name + "Retrieved OnCall: " + str(response.content))
-            elif xMattersAPI.tooManyRequests(response.status_code):
-                self.log.error(def_name + "Status Code: " + str(response.status_code) + ". Too many requests.")
-                if retry < 3:
-                    retry = retry + 1
-                    self.log.error(def_name + "Retrying, retry count: " + str(retry))
-                    return self.__getOnCallGroups(filter, retry)
-            else:
-                self.log.debug(def_name + "Error occurred while retrieving OnCall. Response: " + str(response.content))
-                json_str = None
         except Exception as e:
-            self.log.error(def_name + "Unexpected exception:" + str(e))
-            json_str = None
+            self.__log.error(def_name + "Unexpected exception:" + str(e))
+            response = None
 
-        self.log.debug(def_name + "Returning response: " + str(json_str))
+        self.__log.debug(def_name + "Returning response: " + str(response))
 
-        return json_str
+        return response
 
     # private method
-    def __getOnCallMembers(self, filter, retry=0):
+    def __get_on_call_members(self, url_filter):
 
-        def_name = "__getOnCallMembers "
+        def_name = "__get_on_call_members "
 
         try:
-            self.log.debug(def_name + "Getting OnCall for Members")
-
-            url = filter
-
-            response = self.request.get(url)
-
-            if xMattersAPI.statusCodeSuccess(response.status_code):
-                json_str = response.json()
-                self.log.debug(def_name + json.dumps(json_str))
-                self.log.debug(def_name + "Retrieved OnCall: " + str(response.content))
-            elif xMattersAPI.tooManyRequests(response.status_code):
-                self.log.error(def_name + "Status Code: " + str(response.status_code) + ". Too many requests.")
-                if retry < 3:
-                    retry = retry + 1
-                    self.log.error(def_name + "Retrying, retry count: " + str(retry))
-                    return self.__getOnCallMembers(filter, retry)
-            else:
-                self.log.debug(def_name + "Error occurred while retrieving OnCall. Response: " + str(response.content))
-                json_str = None
+            self.__log.debug(def_name + "Getting OnCall for Members")
+            response = self.__request.get(url_filter)
         except Exception as e:
-            self.log.error(def_name + "Unexpected exception:" + str(e))
-            json_str = None
+            self.__log.error(def_name + "Unexpected exception:" + str(e))
+            response = None
 
-        self.log.debug(def_name + "Returning response: " + str(json_str))
+        self.__log.debug(def_name + "Returning response: " + str(response))
 
-        return json_str
+        return response
 
     # private method
     # purpose of this filter is to remove membersPerShift, offset, and limit
-    def __parseFilter(self, filter=""):
-        def_name = "__parseFilter "
+    def __parse_filter(self, url_filter=""):
+        def_name = "__parse_filter "
         new_filter = ""
 
         try:
-            for filter_str in filter.split("&"):
+            for filter_str in url_filter.split("&"):
                 if filter_str == "":
                     new_filter = new_filter + filter_str
                 else:
-                    if filter_str.find("membersPerShift") == -1 and filter_str.find("offset") == -1 and filter_str.find(
-                            "limit") == -1:
+                    if filter_str.find("membersPerShift") == -1 and filter_str.find("offset") == -1 and filter_str.find("limit") == -1:
                         new_filter = new_filter + "&" + filter_str
         except Exception as e:
-            self.log.error(def_name + "Unexpected exception: " + str(e))
+            self.__log.error(def_name + "Unexpected exception: " + str(e))
 
         return new_filter
 
-    def __hasNextLink(self, obj):
+    def __has_next_link(self, obj):
         has = True
         try:
             # an exception will throw if it doesn't exist

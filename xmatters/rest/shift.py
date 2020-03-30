@@ -8,183 +8,87 @@ class xMattersShift(object):
 
     # constructor
     def __init__(self, request):
-        self.request = request
-        self.log = logging.getLogger(__name__)
+        self.__request = request
+        self.__log = logging.getLogger(__name__)
 
-    def addMemberToShift(self, groupId, shiftId, memberId, retry=0):
-
-        def_name = "addMemberToShift "
-
+    def add_member_to_shift(self, group_id, shift_id, member_id):
+        def_name = "add_member_to_shift "
         try:
-            self.log.debug(def_name + "adding member " + memberId + " to group " + groupId + " shift " + shiftId)
-            url = "/api/xm/1/groups/" + urllib.parse.quote(groupId, safe='') + "/shifts/" + urllib.parse.quote(shiftId, safe='') + "/members"
-
+            self.__log.debug(def_name + "adding member " + member_id + " to group " + group_id + " shift " + shift_id)
             data = {
                 "recipient": {
-                    "id": str(memberId),
+                    "id": str(member_id),
                     "recipientType": "PERSON"
                 }
             }
 
-            response = self.request.post(data, url)
+            response = self.__request.post(data, "/api/xm/1/groups/" + urllib.parse.quote(group_id, safe='') + "/shifts/" + urllib.parse.quote(shift_id, safe='') + "/members")
 
-            if xMattersAPI.statusCodeSuccess(response.status_code):
-                json_str = response.json()
-                self.log.debug(
-                    def_name + json.dumps(json_str))
-                self.log.debug(
-                    def_name + "Added member: " + json_str["recipient"]["id"])
-            elif xMattersAPI.tooManyRequests(response.status_code):
-                self.log.error(def_name + "Status Code: "+str(response.status_code)+". Too many requests.")
-                if retry < 3:
-                    retry = retry+1
-                    self.log.error(def_name + "Retrying, retry count: " + str(retry))
-                    return self.addMemberToShift(groupId, shiftId, memberId, retry)
-            elif response.status_code == 404:
-                self.log.error(
-                    def_name + "Failed to add member: " + memberId + " to Group: " + groupId + ". Group or User does not exist. HTTP Response: " + str(response.content))
-                json_str = None
-            else:
-                self.log.error(
-                    def_name + "Failed to add member: " + groupId + " Response: " + str(response.content))
-                json_str = None
         except Exception as e:
-            self.log.error(
+            self.__log.error(
                 def_name + "Unexpected exception:" + str(e))
-            json_str = None
+            response = None
 
-        self.log.debug(def_name + "Returning response: " + str(json_str))
+        self.__log.debug(def_name + "Returning response: " + str(response))
 
-        return json_str
+        return response
 
-    def getShift(self, groupId, shiftId, retry=0):
-
-        def_name = "getShift "
-
+    def get_shift(self, group_id, shift_id):
+        def_name = "get_shift "
         try:
-            self.log.debug(def_name + "Getting Group: " + groupId)
-            url = "/api/xm/1/groups/" + urllib.parse.quote(groupId, safe='') + "/shifts/" + urllib.parse.quote(shiftId, safe='')
+            self.__log.debug(def_name + "Getting Group: " + group_id)
+            response = self.__request.get("/api/xm/1/groups/" + urllib.parse.quote(group_id, safe='') + "/shifts/" + urllib.parse.quote(shift_id, safe=''))
 
-            response = self.request.get(url)
-
-            if xMattersAPI.statusCodeSuccess(response.status_code):
-                json_str = response.json()
-                self.log.debug(
-                    def_name + json.dumps(json_str))
-                self.log.debug(def_name + "Retrieved shift: " + json_str["name"] + ". ID = " + json_str["id"])
-            elif xMattersAPI.tooManyRequests(response.status_code):
-                self.log.error(def_name + "Status Code: "+str(response.status_code)+". Too many requests.")
-                if retry < 3:
-                    retry = retry+1
-                    self.log.error(def_name + "Retrying, retry count: " + str(retry))
-                    return self.getShift(name, groupId, shiftId, retry)
-            else:
-                self.log.error(
-                    def_name + "Failed retrieving shift: " + name + " Response: " + str(response.content))
-                json_str = None
         except Exception as e:
-            self.log.error(
+            self.__log.error(
                 def_name + "Unexpected exception:" + str(e))
-            json_str = None
+            response = None
 
-        self.log.debug(def_name + "Returning response: " + str(json_str))
+        self.__log.debug(def_name + "Returning response: " + str(response))
 
-        return json_str
+        return response
 
-    def getShifts(self, groupId, retry=0):
-
-        def_name = "getShifts "
-
+    def get_shifts(self, group_id):
+        def_name = "get_shifts "
         try:
-            self.log.debug(def_name + "Getting Group Shifts: " + groupId)
-            url = "/api/xm/1/groups/" + urllib.parse.quote(groupId, safe='') + "/shifts"
+            self.__log.debug(def_name + "Getting Group Shifts: " + group_id)
+            response = self.__request.get("/api/xm/1/groups/" + urllib.parse.quote(group_id, safe='') + "/shifts")
 
-            response = self.request.get(url)
-
-            if xMattersAPI.statusCodeSuccess(response.status_code):
-                json_str = response.json()
-                self.log.debug(
-                    def_name + json.dumps(json_str))
-                self.log.debug(def_name + "Retrieved shifts: " + str(response.content))
-            elif xMattersAPI.tooManyRequests(response.status_code):
-                self.log.error(def_name + "Status Code: "+str(response.status_code)+". Too many requests.")
-                if retry < 3:
-                    retry = retry+1
-                    self.log.error(def_name + "Retrying, retry count: " + str(retry))
-                    return self.getShifts(groupId, retry)
-            else:
-                self.log.error(
-                    def_name + "Failed retrieving shift: " + name + " Response: " + str(response.content))
-                json_str = None
         except Exception as e:
-            self.log.error(
+            self.__log.error(
                 def_name + "Unexpected exception:" + str(e))
-            json_str = None
+            response = None
 
-        self.log.debug(def_name + "Returning response: " + str(json_str))
+        self.__log.debug(def_name + "Returning response: " + str(response))
 
-        return json_str
+        return response
 
-    def createShift(self, groupId, data, retry=0):
-
-        def_name = "createShift "
-
+    def create_shift(self, group_id, data):
+        def_name = "create_shift "
         try:
-            self.log.debug(def_name + "Creating Shift, for " + groupId)
-            url = "/api/xm/1/groups/" + urllib.parse.quote(groupId, safe='') + "/shifts"
+            self.__log.debug(def_name + "Creating Shift, for " + group_id)
+            response = self.__request.post(data, "/api/xm/1/groups/" + urllib.parse.quote(group_id, safe='') + "/shifts")
 
-            response = self.request.post(data, url)
-
-            if xMattersAPI.statusCodeSuccess(response.status_code):
-                json_str = response.json()
-                self.log.debug(def_name + json.dumps(json_str))
-                self.log.debug(def_name + "Created shift: " + groupId)
-            elif xMattersAPI.tooManyRequests(response.status_code):
-                self.log.error(def_name + "Status Code: "+str(response.status_code)+". Too many requests.")
-                if retry < 3:
-                    retry = retry+1
-                    self.log.error(def_name + "Retrying, retry count: " + str(retry))
-                    return self.createShift(groupId, data, retry)
-            else:
-                self.log.error(def_name + "Failed creating shift, for Group: " + groupId + " Response: " + str(response.content))
-                json_str = None
         except Exception as e:
-            self.log.error(
+            self.__log.error(
                 def_name + "Unexpected exception:" + str(e))
-            json_str = None
+            response = None
 
-        self.log.debug(def_name + "Returning response: " + str(json_str))
+        self.__log.debug(def_name + "Returning response: " + str(response))
 
-        return json_str
+        return response
 
-    def deleteShift(self, groupId, shiftId, retry):
-
-        def_name = "deleteShift "
-
+    def delete_shift(self, group_id, shift_id):
+        def_name = "delete_shift "
         try:
-            self.log.debug(def_name + "Getting Group: " + groupId)
-            url = "/api/xm/1/groups/" + urllib.parse.quote(groupId, safe='') + "/shifts/" + urllib.parse.quote(shiftId, safe='')
-            response = self.request.delete(url)
+            self.__log.debug(def_name + "Getting Group: " + group_id)
+            response = self.__request.delete("/api/xm/1/groups/" + urllib.parse.quote(group_id, safe='') + "/shifts/" + urllib.parse.quote(shift_id, safe=''))
 
-            if xMattersAPI.statusCodeSuccess(response.status_code):
-                json_str = response.json()
-                self.log.debug(
-                    def_name + json.dumps(json_str))
-                self.log.debug(def_name + "Deleted shift: " + shiftId)
-            elif xMattersAPI.tooManyRequests(response.status_code):
-                self.log.error(def_name + "Status Code: "+str(response.status_code)+". Too many requests.")
-                if retry < 3:
-                    retry = retry+1
-                    self.log.error(def_name + "Retrying, retry count: " + str(retry))
-                    return self.deleteShift(groupId, groupId, shiftId, retry)
-            else:
-                self.log.error(def_name + "Failed deleting shift: " + shiftId + " from Group: " + groupId + " Response: " + str(response.content))
-                json_str = None
         except Exception as e:
-            self.log.error(
+            self.__log.error(
                 def_name + "Unexpected exception:" + str(e))
-            json_str = None
+            response = None
 
-        self.log.debug(def_name + "Returning response: " + str(json_str))
+        self.__log.debug(def_name + "Returning response: " + str(response))
 
-        return json_str
+        return response

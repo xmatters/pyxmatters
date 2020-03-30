@@ -31,15 +31,15 @@ import time
 time_util = xmatters.TimeCalc()
 
 # time start
-start = time_util.getTimeNow()
-print("Starting Process: " + time_util.formatDateTimeNow(start))
+start = time_util.get_time_now()
+print("Starting Process: " + time_util.format_date_time_now(start))
 
 # sleep for one second
 time.sleep(1)
 
 # time end
-end = time_util.getTimeNow()
-print("Process Duration: " + time_util.getDiff(end, start))
+end = time_util.get_time_now()
+print("Process Duration: " + time_util.get_diff(end, start))
 ```
 
 ## Working Projects
@@ -69,4 +69,4 @@ To test locally uninstall the package by:
 
 ## Miscellaneous Notes
 * For MacOS users: Recursively remove compiled files prior to uploading to GitHub
-    * From within src directory (i.e. `/xm-integrator-py/src`) execute the following: `find . | grep -E "(__pycache__|\.pyc|\.pyo$)" | xargs rm -rf`
+    * From within src directory (i.e. `/pyxmatters/src`) execute the following: `find . | grep -E "(__pycache__|\.pyc|\.pyo$)" | xargs rm -rf`
