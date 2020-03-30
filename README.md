@@ -26,10 +26,12 @@ xm_person = xmatters.xMattersPerson(environment)
 
 log.info("Starting Process")
 xm_person.create_person({'targetName': 'username', 'firstName': 'firstname', 'lastName': 'lastName', 'roles': ['Group Supervisor']})
-xm_person.get_person('username')
+user_id = xm_person.get_person('username')['id']
+xm_person.modify_person({'id': user_id, 'firstName': 'new_firstname'})
 xm_person.get_people_collection()
 xm_person.remove_person('username')
 ```
+
 #### /pyxmatters/rest/device.py
 
 ```
@@ -101,6 +103,7 @@ log.info("Starting Process")
 xm_roster.add_member_to_roster('Test Group', 'username')
 xm_roster.get_roster('Test Group')
 xm_roster.remove_member_from_roster('Test Group', 'username')
+xm_roster.get_roster_collection()
 ```
 
 #### /pyxmatters/rest/site.py
