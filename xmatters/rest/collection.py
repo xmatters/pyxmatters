@@ -14,13 +14,13 @@ class xMattersCollectionThread(object):
         self.log = logging.getLogger(__name__)
         self.request = request
 
-    def create_thread_collection(self, child_method, data, max_threads, target_method):
-        bucket_size = int(math.ceil(float(len(data)) / float(max_threads)))
+    def create_thread_collection(self, child_method, data, thread_count, target_method):
+        bucket_size = int(math.ceil(float(len(data)) / float(thread_count)))
         threads = []
-        for n in range(max_threads):
-            slice = data[n * int(bucket_size): (n + 1) * int(bucket_size)]
-            if len(slice) > 0:
-                process = threading.Thread(target=target_method, args=(child_method, n, slice,))
+        for n in range(thread_count):
+            thread_slice = data[n * int(bucket_size): (n + 1) * int(bucket_size)]
+            if len(thread_slice) > 0:
+                process = threading.Thread(target=target_method, args=(child_method, n, thread_slice,))
                 process.start()
                 threads.append(process)
 
@@ -39,11 +39,11 @@ class xMattersCollection(xMattersCollectionThread):
         self.response = []
         self.errors = []
 
-    def create_collection(self, child_method, data, max_threads):
+    def create_collection(self, child_method, data, thread_count):
         del self.response[:]  # first clear the list from any previous processes
         del self.errors[:]
 
-        self.create_thread_collection(child_method, data, max_threads, self.execute)
+        self.create_thread_collection(child_method, data, thread_count, self.execute)
         return {"response": self.response, "errors": self.errors}
 
     def execute(self, method, thread, data):

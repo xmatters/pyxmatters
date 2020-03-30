@@ -17,7 +17,7 @@ class xMattersPlans(object):
     def get_plan(self, plan_id, url_filter="?embed=creator,constants,endpoints,forms,propertyDefinitions,integrations"):
         def_name = "get_plan "
         try:
-            self.__log.debug(def_name + "Getting Plan: " + iplan_idd)
+            self.__log.debug(def_name + "Getting Plan: " + plan_id)
             response = self.__request.get("/api/xm/1/plans/" + urllib.parse.quote(plan_id, safe='') + url_filter)
 
         except Exception as e:

@@ -69,4 +69,4 @@ To test locally uninstall the package by:
 
 ## Miscellaneous Notes
 * For MacOS users: Recursively remove compiled files prior to uploading to GitHub
-    * From within src directory (i.e. `/pyxmatters/src`) execute the following: `find . | grep -E "(__pycache__|\.pyc|\.pyo$)" | xargs rm -rf`
+    * From within src directory (i.e. `/pyxmatters`) execute the following: `find . | grep -E "(__pycache__|\.pyc|\.pyo$)" | xargs rm -rf`

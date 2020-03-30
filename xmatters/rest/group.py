@@ -14,11 +14,11 @@ class xMattersGroup(object):
         self.__request = request
         self.__log = logging.getLogger(__name__)
 
-    def get_group(self, id, filter_url="?embed=supervisors"):
+    def get_group(self, group_id, filter_url="?embed=supervisors"):
         def_name = "get_group "
         try:
-            self.__log.debug(def_name + "Getting Group: " + id)
-            response = self.__request.get("/api/xm/1/groups/" + urllib.parse.quote(id, safe='') + filter_url)
+            self.__log.debug(def_name + "Getting Group: " + group_id)
+            response = self.__request.get("/api/xm/1/groups/" + urllib.parse.quote(group_id, safe='') + filter_url)
 
         except Exception as e:
             self.__log.error(def_name + "Unexpected exception:" + str(e))
