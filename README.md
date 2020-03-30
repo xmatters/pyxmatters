@@ -129,6 +129,71 @@ This directory contains misc. utilities that provide benefits to users executing
 #### pyxmatters/util/column.py
 column.py is a class responsible for reading csv files. The intent of this class is to treat a csv like a sql db.
 
+The core function leveraged in column.py is get_rows, below are the details for the function
+
+```
+    columns [Array] (Required): 
+        Array of string objects that are to be retrieved from the file i.e.,
+        ['targetName', 'roles'] will only return identified headers
+        ["*"] will return all columns
+    
+    select [Set or Dict] (Optional): This is a single SELECT statement
+        Pass either a set() i.e. {"targetName"}
+        or Pass a dict() i.e. {"targetName": "Application Developers"}
+        This will be default only accept the first value passed in either the set or dict
+        
+    distinct [Boolean] Optional: This field will return duplicate rows for a key if false, if true will
+        return every occurrence for a key
+        
+    delimiter_to_array [String](Optional): delimiter to be used to split a field value to an array, i.e. 
+        if ";" provided: ldavid;jseinfeld --> ['ldavid', 'jseinfeld']
+```
+
+Save the file below as a dynamic_teams.csv in UTF-8 Encoding:
+```
+targetName,supervisors,observers,operand,criterionType,field,criterionOperand,value
+Dynamic Teams 1,jerry.seinfeld,Company Supervisor,OR,CUSTOM_FIELD,City,EQUALS,Philadelphia
+Dynamic Teams 1,jerry.seinfeld,Company Supervisor,OR,CUSTOM_FIELD,City,EQUALS,Washington D.C.
+Dynamic Teams 2,larry.david;jerry.seinfeld,REST Web Service User;Company Supervisor,OR,CUSTOM_FIELD,City,EQUALS,Based at Home
+Dynamic Teams 2,larry.david;jerry.seinfeld,REST Web Service User;Company Supervisor,OR,CUSTOM_FIELD,City,EQUALS,Brooklyn
+Dynamic Teams 2,larry.david;jerry.seinfeld,REST Web Service User;Company Supervisor,OR,CUSTOM_FIELD,City,EQUALS,Hoboken
+Dynamic Teams 2,larry.david;jerry.seinfeld,REST Web Service User;Company Supervisor,OR,CUSTOM_FIELD,City,EQUALS,West Village
+```
+
+Execute the below for testing:
+```
+import xmatters
+import logging
+logging.basicConfig(filename='log.log',level=10,datefmt='%m-%d-%Y %H:%M:%S',format='%(asctime)s %(name)s %(levelname)s: %(message)s')
+log = logging.getLogger(__name__)
+
+dynamic_teams_file = xmatters.Column("dynamic_teams.csv", "utf-8-sig")
+
+# 1.) Pass: Return specific columns, this should return every occurrence of the targetName
+dynamic_teams_data = dynamic_teams_file.get_rows(["targetName"])
+log.info(json.dumps(dynamic_teams_data))
+
+# 2.) Pass: Return all columns and delimiter
+dynamic_teams_data = dynamic_teams_file.get_rows(["*"], None, None, ";")
+log.info(json.dumps(dynamic_teams_data))
+
+# 3.) Passed: Return all columns, this should return every occurrence of the targetName
+dynamic_teams_data = dynamic_teams_file.get_rows(["*"], {"targetName"}, False, ";")
+log.info(json.dumps(dynamic_teams_data))
+
+# 4.) Passed: Return a distinct list of targetNames
+dynamic_teams_data = dynamic_teams_file.get_rows(["*"], {"targetName"}, True, ";")
+log.info(json.dumps(dynamic_teams_data))
+
+# 5.) Passed: Should only return a distinct list of the passed key/value
+dynamic_teams_data = dynamic_teams_file.get_rows(["*"], {"targetName": "Dynamic Teams 2"}, True, ";")
+log.info(json.dumps(dynamic_teams_data))
+
+# 6.) Passed: Should return every occurrence of the passed key/value
+dynamic_teams_data = dynamic_teams_file.get_rows(["*"], {"targetName": "Dynamic Teams 2"}, False, ";")
+log.info(json.dumps(dynamic_teams_data))
+```
+
 #### pyxmatters/util/timecalc.py
 timecalc.py is a helper class for displaying start and end durations of a running process
 ```
