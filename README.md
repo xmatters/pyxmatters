@@ -198,6 +198,7 @@ Below is an example of interfacing with `xMattersOnCall`. Below are the methods 
 ```buildoutcfg
 import xmatters
 import logging
+import json
 logging.basicConfig(filename='log.log',level=10,datefmt='%m-%d-%Y %H:%M:%S',format='%(asctime)s %(name)s %(levelname)s: %(message)s')
 log = logging.getLogger(__name__)
 
@@ -222,11 +223,80 @@ Below is an example of interfacing with `xMattersDynamicTeams`. Below are the me
 * **create_dynamic_team**: Requires the json object to create the xMatters record as documented on the xMatters REST API
 
 #### pyxmatters/rest/collection.py
+Below is an example of leveraging the `xMattersCollection`. This python module is a powerful tool to be used increase throughput when executing updates in xMatters. This process was built only for Create, Modify, and Deletion methods. Getter methods should leverage the aforementioned collection methods that are found in the respective moduldes.
+
+The value of this collection is that it provides the ability to include threading or concurrency. Below is an example of using it. The collection module itself is very dynamic, it will always require:
+```buildoutcfg
+import xmatters
+environment = xmatters.xMattersAPI("https://matthenry.cs1.xmatters.com", "rest_username", "rest_password")
+xm_collection = xmatters.xMattersCollection(environment)
+max_thread_count = 5
+
+xm_collection.create_collection(INSERT_METHOD_NAME, ARRAY_OF_DATA, max_thread_count)
+```
+Where in the above **INSERT_METHOD_NAME** is the associated Create, Update, or Delete method. Where **ARRAY_OF_DATA** is the associated data to send to the function.
+
+The **ARRAY_OF_DATA** must match the signature of the method being called, so for instance, since `xMattersGroup.create_group` accepts a parameter named `data`, **ARRAY_OF_DATA** in this case must look like to match the method signature:
+```buildoutcfg
+[{"data":{"targetName": "groupname_1"}}, {"data":{"targetName": "groupname_2"}}, {"data":{"targetName": "groupname_3"}}]
+```
+
+In another scenario, since `xMattersShift.add_member_to_shift` accepts 3 parameters named `group_id`, `shift_id`, and `member_id`, **ARRAY_OF_DATA** in this case must look like to match the method signature:
+```buildoutcfg
+[{"group_id": "groupname_1", "shift_id": "Default Shift", "member_id": "username_1"}, {"group_id": "groupname_1", "shift_id": "Default Shift", "member_id": "username_2"}, {"group_id": "groupname_1", "shift_id": "Default Shift", "member_id": "username_3"}]
+```
 
 **Script Example:**
 ```buildoutcfg
+import xmatters
+import logging
+import json
 
-member_response = xm_collection.create_collection(xm_shift.add_member_to_shift, new_data, config.thread_count)
+logging.basicConfig(filename="log.log",level=10,datefmt="%m-%d-%Y %H:%M:%S",format="%(asctime)s %(name)s %(levelname)s: %(message)s")
+log = logging.getLogger(__name__)
+
+environment = xmatters.xMattersAPI("https://matthenry.cs1.xmatters.com", "rest_username", "rest_password")
+xm_collection = xmatters.xMattersCollection(environment)
+max_thread_count = 5
+
+# Example person thread creation
+xm_person = xmatters.xMattersPerson(environment)
+
+person_data = []
+for x in range(10):
+    person_data.append({"data":{"targetName": "username_"+str(x), "firstName": "username_"+str(x), "lastName": "username_"+str(x), "roles": ["Group Supervisor"]}})
+person_create_response = xm_collection.create_collection(xm_person.create_person, person_data, max_thread_count)
+log.info("Success Response: "+json.dumps(person_create_response["response"]))
+log.info("Error Response: " + json.dumps(person_create_response["errors"]))
+
+# Example group thread creation
+xm_group = xmatters.xMattersGroup(environment)
+
+group_data = []
+for x in range(10):
+    group_data.append({"data":{"targetName": "groupname_"+str(x)}})
+group_create_response = xm_collection.create_collection(xm_group.create_group, group_data, max_thread_count)
+log.info("Success Response: "+json.dumps(group_create_response["response"]))
+log.info("Error Response: " + json.dumps(group_create_response["errors"]))
+
+
+# Example of add member thread
+xm_shift = xmatters.xMattersShift(environment)
+member_data = []
+for x in range(10):
+    member_data.append({"group_id": "groupname_"+str(x), "shift_id": "Default Shift", "member_id": "username_"+str(x)})
+member_create_response = xm_collection.create_collection(xm_shift.add_member_to_shift, member_data, max_thread_count)
+log.info("Success Response: "+json.dumps(member_create_response["response"]))
+log.info("Error Response: " + json.dumps(member_create_response["errors"]))
+
+# uncomment below to delete execution from above
+# remove_user_data = []
+# remove_group_data = []
+# for x in range(10):
+#     remove_user_data.append({"person_id":"username_"+str(x)})
+#     remove_group_data.append({"group_id":"groupname_"+str(x)})
+# person_remove_response = xm_collection.create_collection(xm_person.remove_person, remove_user_data, 5)
+# group_remove_response = xm_collection.create_collection(xm_group.remove_group, remove_group_data, 5)
 
 ```
 
@@ -273,7 +343,7 @@ The core function leveraged in column.py is get_rows, below are the details for 
 ```
 
 Save the file below as a dynamic_teams.csv in UTF-8 Encoding:
-```
+```buildoutcfg
 targetName,supervisors,observers,operand,criterionType,field,criterionOperand,value
 Dynamic Teams 1,jerry.seinfeld,Company Supervisor,OR,CUSTOM_FIELD,City,EQUALS,Philadelphia
 Dynamic Teams 1,jerry.seinfeld,Company Supervisor,OR,CUSTOM_FIELD,City,EQUALS,Washington D.C.
@@ -284,9 +354,10 @@ Dynamic Teams 2,larry.david;jerry.seinfeld,REST Web Service User;Company Supervi
 ```
 
 Execute the below for testing:
-```
+```buildoutcfg
 import xmatters
 import logging
+import json
 logging.basicConfig(filename='log.log',level=10,datefmt='%m-%d-%Y %H:%M:%S',format='%(asctime)s %(name)s %(levelname)s: %(message)s')
 log = logging.getLogger(__name__)
 
@@ -319,7 +390,7 @@ log.info(json.dumps(dynamic_teams_data))
 
 #### pyxmatters/util/timecalc.py
 timecalc.py is a helper class for displaying start and end durations of a running process
-```
+```buildoutcfg
 import xmatters
 import time
 time_util = xmatters.TimeCalc()
