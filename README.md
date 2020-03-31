@@ -216,12 +216,6 @@ for group in groups:
     log.info("Received On Call Schedule for Group: " + json.dumps(group_on_call))
 ```
 
-#### pyxmatters/rest/dynamic_teams.py
-For specific method signature detail see the file documented above for specifics.
-
-Below is an example of interfacing with `xMattersDynamicTeams`. Below are the methods available:
-* **create_dynamic_team**: Requires the json object to create the xMatters record as documented on the xMatters REST API
-
 #### pyxmatters/rest/collection.py
 Below is an example of leveraging the `xMattersCollection`. This python module is a powerful tool to be used increase throughput when executing updates in xMatters. This process was built only for Create, Modify, and Deletion methods. Getter methods should leverage the aforementioned collection methods that are found in the respective moduldes.
 
@@ -300,6 +294,11 @@ log.info("Error Response: " + json.dumps(member_create_response["errors"]))
 
 ```
 
+#### pyxmatters/rest/dynamic_teams.py
+For specific method signature detail see the file documented above for specifics.
+
+Below is an example of interfacing with `xMattersDynamicTeams`. Below are the methods available:
+* **create_dynamic_team**: Requires the json object to create the xMatters record as documented on the xMatters REST API
 
 #### pyxmatters/rest/plans.py
 For specific method signature detail see the file documented above for specifics.
