@@ -37,7 +37,7 @@ Below is an example of interfacing with `xMattersPerson`. Below are the methods 
 * **get_people_collection**: A single threaded process to return all users from an instance, there is no limit on what is returned, the process will loop for all records requested. So if there are 60k records in the instance, all records will be returned. To refine the search this function also accepts an optional url filter string, i.e. `&embed=roles&roles=Standard User`
 
 Script Example:
-```
+```buildoutcfg
 import xmatters
 import logging
 logging.basicConfig(filename='log.log',level=10,datefmt='%m-%d-%Y %H:%M:%S',format='%(asctime)s %(name)s %(levelname)s: %(message)s')
@@ -64,7 +64,8 @@ Below is an example of interfacing with `xMattersDevice`. Below are the methods 
 * **modify_device**: Requires the json object to create the xMatters record as documented on the xMatters REST API
 * **remove_device**: Requires the device id 
 
-```
+**Script Example:**
+```buildoutcfg
 import xmatters
 import logging
 logging.basicConfig(filename='log.log',level=10,datefmt='%m-%d-%Y %H:%M:%S',format='%(asctime)s %(name)s %(levelname)s: %(message)s')
@@ -91,7 +92,8 @@ Below is an example of interfacing with `xMattersGroup`. Below are the methods a
 * **remove_group**: Requires the group id 
 * **get_group_collection**: A single threaded process to return all records from an instance, there is no limit on what is returned, the process will loop for all records requested. So if there are 60k records in the instance, all records will be returned. To refine the search this function also accepts an optional url filter string, i.e. `status=ACTIVE`
 
-```
+**Script Example:**
+```buildoutcfg
 import xmatters
 import logging
 logging.basicConfig(filename='log.log',level=10,datefmt='%m-%d-%Y %H:%M:%S',format='%(asctime)s %(name)s %(levelname)s: %(message)s')
@@ -118,7 +120,8 @@ Below is an example of interfacing with `xMattersShift`. Below are the methods a
 * **create_shift**: Requires the json object to create the xMatters record as documented on the xMatters REST API
 * **delete_shift**: Requires the group name or group id and shift name or shift id
 
-```
+**Script Example:**
+```buildoutcfg
 import xmatters
 import logging
 logging.basicConfig(filename='log.log',level=10,datefmt='%m-%d-%Y %H:%M:%S',format='%(asctime)s %(name)s %(levelname)s: %(message)s')
@@ -144,7 +147,8 @@ Below is an example of interfacing with `xMattersRoster`. Below are the methods 
 * **get_roster**: Requires the the group name or group id and optionally accepts a url filter string `&offset=0&limit=1000`
 * **get_roster_collection**: Requires the group name or group id
 
-```
+**Script Example:**
+```buildoutcfg
 import xmatters
 import logging
 logging.basicConfig(filename='log.log',level=10,datefmt='%m-%d-%Y %H:%M:%S',format='%(asctime)s %(name)s %(levelname)s: %(message)s')
@@ -168,7 +172,7 @@ Below is an example of interfacing with `xMattersSite`. Below are the methods av
 * **create_site**: Requires the json object to create the xMatters record as documented on the xMatters REST API
 * **get_sites**: Returns the first 1000 sites
 * **modify_site**: Requires the json object to create the xMatters record as documented on the xMatters REST API
-```
+```buildoutcfg
 import xmatters
 import logging
 logging.basicConfig(filename='log.log',level=10,datefmt='%m-%d-%Y %H:%M:%S',format='%(asctime)s %(name)s %(levelname)s: %(message)s')
@@ -190,7 +194,8 @@ For specific method signature detail see the file documented above for specifics
 Below is an example of interfacing with `xMattersOnCall`. Below are the methods available:
 * **get_on_call_collection**: Accepts a url filter string. By default this function will return all members associated, it will paginate through all shifts and will return all members even if 100. By design this function was built to take care of all processing and paginating for you.
 
-```
+**Script Example:**
+```buildoutcfg
 import xmatters
 import logging
 logging.basicConfig(filename='log.log',level=10,datefmt='%m-%d-%Y %H:%M:%S',format='%(asctime)s %(name)s %(levelname)s: %(message)s')
@@ -218,8 +223,8 @@ Below is an example of interfacing with `xMattersDynamicTeams`. Below are the me
 
 #### pyxmatters/rest/collection.py
 
+**Script Example:**
 ```buildoutcfg
-
 
 member_response = xm_collection.create_collection(xm_shift.add_member_to_shift, new_data, config.thread_count)
 
