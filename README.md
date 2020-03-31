@@ -239,14 +239,7 @@ print("Process Duration: " + time_util.get_diff(end, start))
 ## Working Projects
 For implementation in a working project see: https://github.com/matthewhenry1/integrator_py
 
-### Testing locally
-To test locally uninstall the package by:
-* `sudo pip3 uninstall pyxmatters`
-* add `xmatters` to the local directory in which you want to test and then import `xmatters` as you normally would to begin testing
 
-## Miscellaneous Notes
-* For MacOS users: Recursively remove compiled files prior to uploading to GitHub
-    * From within src directory (i.e. `/pyxmatters`) execute the following: `find . | grep -E "(__pycache__|\.pyc|\.pyo$)" | xargs rm -rf`
 
 ## Notes For Contributors
 
@@ -260,6 +253,15 @@ Procedure:
 2. `python3 setup.py sdist bdist_wheel`
 3. `twine upload dist/*`
 
+* For MacOS users: Recursively remove compiled files prior to uploading to GitHub
+    * From within src directory (i.e. `/pyxmatters`) execute the following: `find . | grep -E "(__pycache__|\.pyc|\.pyo$)" | xargs rm -rf`
+
 References:
 * https://pypi.org/project/twine/
 * https://stackoverflow.com/questions/52016336/how-to-upload-new-versions-of-project-to-pypi-with-twine
+
+### Testing locally
+To test locally uninstall the package by:
+* `sudo pip3 uninstall pyxmatters`
+* add `xmatters` to the local directory in which you want to test and then import `xmatters` as you normally would to begin testing
+
