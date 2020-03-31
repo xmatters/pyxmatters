@@ -20,16 +20,21 @@ For implementation in a working project see: https://github.com/matthewhenry1/in
 ### pyxmatters/rest
 This directory provides user, device, group, and site rest api capabilities.
 
+#### Quick Notes on URL Filters in Methods
+* By default all optional url filters in methods will assign the `?` or `&` by default. So for instance on `xMattersPerson.get_person` method the url filter string can be passed as: `?embed=roles,supervisors`, `&embed=roles,supervisors`, or `embed=roles,supervisors` will work.
+* For any methods that include _collections_ i.e. _xMattersPerson.get_person_collection_, _xMattersGroup.get_group_collection_, and _xMattersRoster.get_roster_collection_ by default offset and limit will be stripped and just like the above the assignment of the `?` or `&` will be handled for you by default. So `?status=ACTIVE` or `&status=ACTIVE`, or `status=ACTIVE` will work.
+* Lastly, by default anything that will be leveraged in a URL will be auto encoded, this applies to targetNames, id's, and the aforementioned filters. So `embed=roles&roles=Standard User` is fine to pass to as this will be handled automatically.
+
 #### pyxmatters/rest/person.py
 For specific method signature detail see the file documented above for specifics.
 
 Below is an example of interfacing with `xMattersPerson`. Below are the methods available:
-* get_person: Accepts the username or user id as well as an optional url filter string i.e. ?embed=roles,supervisors
-* get_people: Accepts an optional url filter string, i.e. ?embed=roles,devices&offset=0&limit=1000
-* create_person: Requires the json object to create the xMatters record as documented on the xMatters REST API
-* modify_person: Requires the json object to create the xMatters record as documented on the xMatters REST API
-* remove_person: Requires the users id 
-* get_people_collection: A single threaded process to return all users from an instance, there is no limit on what is returned, the process will loop for all records requested. So if there are 60k records in the instance, all records will be returned. To refine the search this function also accepts an optional url filter string, i.e. &embed=roles&roles=Standard User
+* **get_person**: Accepts the username or user id as well as an optional url filter string i.e. _?embed=roles,supervisors_
+* **get_people**: Accepts an optional url filter string, i.e. _?embed=roles,devices&offset=0&limit=1000_
+* **create_person**: Requires the json object to create the xMatters record as documented on the xMatters REST API
+* **modify_person**: Requires the json object to create the xMatters record as documented on the xMatters REST API
+* **remove_person**: Requires the users id 
+* **get_people_collection**: A single threaded process to return all users from an instance, there is no limit on what is returned, the process will loop for all records requested. So if there are 60k records in the instance, all records will be returned. To refine the search this function also accepts an optional url filter string, i.e. _&embed=roles&roles=Standard User_
 
 Script Example:
 ```
@@ -53,11 +58,11 @@ xm_person.remove_person('username')
 For specific method signature detail see the file documented above for specifics.
 
 Below is an example of interfacing with `xMattersDevice`. Below are the methods available:
-* get_device: Accepts the device id as well as an optional url filter string i.e. ?embed=timeframes
-* get_devices: Accepts an optional url filter string, i.e. ?embed=timeframes
-* create_device: Requires the json object to create the xMatters record as documented on the xMatters REST API
-* modify_device: Requires the json object to create the xMatters record as documented on the xMatters REST API
-* remove_device: Requires the device id 
+* **get_device**: Accepts the device id as well as an optional url filter string i.e. _?embed=timeframes_
+* **get_devices**: Accepts an optional url filter string, i.e. _?embed=timeframes_
+* **create_device**: Requires the json object to create the xMatters record as documented on the xMatters REST API
+* **modify_device**: Requires the json object to create the xMatters record as documented on the xMatters REST API
+* **remove_device**: Requires the device id 
 
 ```
 import xmatters
@@ -77,12 +82,12 @@ xm_device.get_devices()
 
 #### pyxmatters/rest/group.py
 Below is an example of interfacing with `xMattersGroup`. Below are the methods available:
-* get_group: Accepts the group name or group id as well as an optional url filter string i.e. ?embed=supervisors
-* get_groups: Accepts an optional url filter string, i.e. ?offset=0&limit=1000
-* create_group: Requires the json object to create the xMatters record as documented on the xMatters REST API
-* modify_group: Requires the json object to create the xMatters record as documented on the xMatters REST API
-* remove_group: Requires the group id 
-* get_group_collection: A single threaded process to return all records from an instance, there is no limit on what is returned, the process will loop for all records requested. So if there are 60k records in the instance, all records will be returned. To refine the search this function also accepts an optional url filter string, i.e. status=ACTIVE
+* **get_group**: Accepts the group name or group id as well as an optional url filter string i.e. _?embed=supervisors_
+* **get_groups**: Accepts an optional url filter string, i.e. _?offset=0&limit=1000_
+* **create_group**: Requires the json object to create the xMatters record as documented on the xMatters REST API
+* **modify_group**: Requires the json object to create the xMatters record as documented on the xMatters REST API
+* **remove_group**: Requires the group id 
+* **get_group_collection**: A single threaded process to return all records from an instance, there is no limit on what is returned, the process will loop for all records requested. So if there are 60k records in the instance, all records will be returned. To refine the search this function also accepts an optional url filter string, i.e. _status=ACTIVE_
 
 ```
 import xmatters
