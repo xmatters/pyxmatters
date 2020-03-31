@@ -2,7 +2,7 @@
 pyxmatters is a python3 sdk that provides a RESTful interface with xMatters. Additionally there are capabilities to interface with csv files.
 
 ## Install, Upgrades, and use of pyxmatters
-For Production use it is **strongly** recommended to download the pyxmatters package locally from GitHub, specifically the `xmatters` directory, and set the `xmatters` directory alongside the script leveraging it. For use locally, just enter `import xmatters` at the top of the calling script as documented in the steps below. This is import is the same procedure as if the package was downloaded using pip. Also, this SDK is a work in progress, not all REST API's are wrapped, so there is additional value in having a local copy to modify as needed. 
+For Production use it is **strongly** recommended to download the pyxmatters package locally from GitHub, specifically the `xmatters` directory, and set the `xmatters` directory alongside the script leveraging it. For use locally, just enter `import xmatters` at the top of the calling script as documented in the steps below. This is import is the same procedure as if the package was downloaded using pip. Also, this SDK is a work in progress, not all REST API's are wrapped, so there is additional value in having a local copy to modify as needed.
 
 For installing locally with the understanding the package will change and could break your script, follow the steps below:
 
@@ -33,7 +33,7 @@ Below is an example of interfacing with `xMattersPerson`. Below are the methods 
 * **get_people**: Accepts an optional url filter string, i.e. `?embed=roles,devices&offset=0&limit=1000`
 * **create_person**: Requires the json object to create the xMatters record as documented on the xMatters REST API
 * **modify_person**: Requires the json object to create the xMatters record as documented on the xMatters REST API
-* **remove_person**: Requires the users id 
+* **remove_person**: Requires the users id
 * **get_people_collection**: A single threaded process to return all users from an instance, there is no limit on what is returned, the process will loop for all records requested. So if there are 60k records in the instance, all records will be returned. To refine the search this function also accepts an optional url filter string, i.e. `&embed=roles&roles=Standard User`
 
 Script Example:
@@ -62,7 +62,7 @@ Below is an example of interfacing with `xMattersDevice`. Below are the methods 
 * **get_devices**: Accepts an optional url filter string, i.e. `?embed=timeframes`
 * **create_device**: Requires the json object to create the xMatters record as documented on the xMatters REST API
 * **modify_device**: Requires the json object to create the xMatters record as documented on the xMatters REST API
-* **remove_device**: Requires the device id 
+* **remove_device**: Requires the device id
 
 **Script Example:**
 ```buildoutcfg
@@ -89,7 +89,7 @@ Below is an example of interfacing with `xMattersGroup`. Below are the methods a
 * **get_groups**: Accepts an optional url filter string, i.e. `?offset=0&limit=1000`
 * **create_group**: Requires the json object to create the xMatters record as documented on the xMatters REST API
 * **modify_group**: Requires the json object to create the xMatters record as documented on the xMatters REST API
-* **remove_group**: Requires the group id 
+* **remove_group**: Requires the group id
 * **get_group_collection**: A single threaded process to return all records from an instance, there is no limit on what is returned, the process will loop for all records requested. So if there are 60k records in the instance, all records will be returned. To refine the search this function also accepts an optional url filter string, i.e. `status=ACTIVE`
 
 **Script Example:**
@@ -289,8 +289,8 @@ log.info("Error Response: " + json.dumps(member_create_response["errors"]))
 # for x in range(10):
 #     remove_user_data.append({"person_id":"username_"+str(x)})
 #     remove_group_data.append({"group_id":"groupname_"+str(x)})
-# person_remove_response = xm_collection.create_collection(xm_person.remove_person, remove_user_data, 5)
-# group_remove_response = xm_collection.create_collection(xm_group.remove_group, remove_group_data, 5)
+# person_remove_response = xm_collection.create_collection(xm_person.remove_person, remove_user_data, max_thread_count)
+# group_remove_response = xm_collection.create_collection(xm_group.remove_group, remove_group_data, max_thread_count)
 
 ```
 
@@ -323,20 +323,20 @@ The core function leveraged in column.py is get_rows, below are the details for 
 ```
     Method: def get_rows(self, columns, select=None, distinct=None, delimiter_to_array=None):
 
-    columns [Array] (Required): 
+    columns [Array] (Required):
         Array of string objects that are to be retrieved from the file i.e.,
         ['targetName', 'roles'] will only return identified headers
         ["*"] will return all columns
-    
+
     select [Set or Dict] (Optional): This is a single SELECT statement
         Pass either a set() i.e. {"targetName"}
         or Pass a dict() i.e. {"targetName": "Application Developers"}
         This will be default only accept the first value passed in either the set or dict
-        
+
     distinct [Boolean] Optional: This field will return duplicate rows for a key if false, if true will
         return every occurrence for a key
-        
-    delimiter_to_array [String](Optional): delimiter to be used to split a field value to an array, i.e. 
+
+    delimiter_to_array [String](Optional): delimiter to be used to split a field value to an array, i.e.
         if ";" provided: ldavid;jseinfeld --> ['ldavid', 'jseinfeld']
 
 ```
@@ -435,4 +435,3 @@ References:
 To test locally uninstall the package by:
 * `sudo pip3 uninstall pyxmatters`
 * add `xmatters` to the local directory in which you want to test and then import `xmatters` as you normally would to begin testing
-
