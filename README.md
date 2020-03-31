@@ -253,6 +253,7 @@ Procedure:
 2. `python3 setup.py sdist bdist_wheel`
 3. `twine upload dist/*`
 
+Before updating GitHub:
 * For MacOS users: Recursively remove compiled files prior to uploading to GitHub
     * From within src directory (i.e. `/pyxmatters`) execute the following: `find . | grep -E "(__pycache__|\.pyc|\.pyo$)" | xargs rm -rf`
 
