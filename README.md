@@ -409,10 +409,10 @@ print("Process Duration: " + time_util.get_diff(end, start))
 ## Notes For Contributors
 
 ### Variables, Methods, Classes, and File Names
-* Variables: should always be lower case and separated by `_`. Do not use camel casing.
-* Methods: should always be lower case and separated by `_`. Do not use camel casing.
+* Variables: should always be lower case, separated by `_` Do not use camel casing.
+* Methods: should always be lower case, separated by `_` and do not use camel casing.
 * Classes: PyCharm and Python oriented editors will always bark at the `xMatters` prefix, but keep consistent with the standard of `xMatters<purpose>` i.e. `xMattersPerson`
-* Keep consistent with short and brief file names, all lower case and separated by `_`. Do not use camel casing.
+* Keep consistent with short and brief file names, all lower case, separated by `_` and do not use camel casing.
 
 ### Uploading
 `wheel` and `twine` are required for packaging and uploading:
