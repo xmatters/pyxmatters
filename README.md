@@ -1,8 +1,8 @@
 # pyxmatters
-The pyxmatters package provides a rest api interface with xMatters. There are also file reading capabilities to assist with synchronizing data.
+pyxmatters is a python3 sdk that provides a RESTful interface with xMatters. Additionally there are capabilities to interface with csv files.
 
 ## Install, Upgrades, and use of pyxmatters
-For Production use it is **strongly** recommended to download the pyxmatters package, specifically the xmatters directory, and set it alongside the script leveraging it. 
+For Production use it is **strongly** recommended to download the pyxmatters package locally from GitHub, specifically the xmatters directory, and set the xmatters directory alongside the script leveraging it. 
 
 For installing locally with the understanding the package will change and could break your script, follow the steps below:
 
