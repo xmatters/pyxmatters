@@ -228,7 +228,7 @@ Below is an example of leveraging the `xMattersCollection`. This python module i
 The value of this collection is that it provides the ability to include threading or concurrency. Below is an example of using it. The collection module itself is very dynamic, it will always require:
 ```buildoutcfg
 import xmatters
-environment = xmatters.xMattersAPI("https://matthenry.cs1.xmatters.com", "rest_username", "rest_password")
+environment = xmatters.xMattersAPI("https://<instance>.xmatters.com", "rest_username", "rest_password")
 xm_collection = xmatters.xMattersCollection(environment)
 max_thread_count = 5
 
@@ -255,7 +255,7 @@ import json
 logging.basicConfig(filename="log.log",level=10,datefmt="%m-%d-%Y %H:%M:%S",format="%(asctime)s %(name)s %(levelname)s: %(message)s")
 log = logging.getLogger(__name__)
 
-environment = xmatters.xMattersAPI("https://matthenry.cs1.xmatters.com", "rest_username", "rest_password")
+environment = xmatters.xMattersAPI("https://<instance>.xmatters.com", "rest_username", "rest_password")
 xm_collection = xmatters.xMattersCollection(environment)
 max_thread_count = 5
 
