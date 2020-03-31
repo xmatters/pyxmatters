@@ -29,7 +29,7 @@ class xMattersSite(object):
         return response
 
     def create_site(self, data):
-        def_name = "createSite "
+        def_name = "create_site "
         try:
             self.__log.debug(def_name + "Creating Site: " + data["name"] + " with " + str(data))
             response = self.__request.post(data, "/api/xm/1/sites/")
