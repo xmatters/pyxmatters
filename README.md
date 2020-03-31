@@ -2,7 +2,9 @@
 The pyxmatters package provides a rest api interface with xMatters. There are also file reading capabilities to assist with synchronizing data.
 
 ## Install, Upgrades, and use of pyxmatters
-It is **strongly** recommended to install the pyxmatters package locally from GitHub. The direct pip installation documented below will install locally, but for ease of management place the `xmatters` directory in the working source folder of your script.
+For Production use it is **strongly** recommended to download the pyxmatters package, specifically the xmatters directory, and set it alongside the script leveraging it. 
+
+For installing locally with the understanding the package will change and could break your script, follow the steps below:
 
 To Install via pip, navigate to the terminal and enter:
 * `pip3 install pyxmatters`
