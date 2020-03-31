@@ -125,6 +125,28 @@ xm_site.get_sites()
 xm_site.modify_site({'id': site['id'], 'timezone': 'US/Pacific'})
 ```
 
+#### pyxmatters/rest/oncall.py
+
+```
+import xmatters
+import logging
+logging.basicConfig(filename='log.log',level=10,datefmt='%m-%d-%Y %H:%M:%S',format='%(asctime)s %(name)s %(levelname)s: %(message)s')
+log = logging.getLogger(__name__)
+
+environment = xmatters.xMattersAPI("https://<instance>.xmatters.com", "rest_username", "rest_password")
+xm_on_call = xmatters.xMattersOnCall(environment)
+xm_group = xmatters.xMattersGroup(environment)
+
+groups = xm_group.get_group_collection('status=ACTIVE')
+log.info("Received Active Groups: " + json.dumps(groups))
+print("Number of Active Groups returned: " + str(len(groups)))
+
+for group in groups:
+    print("Getting On Call Schedule for Group: " + str(group['targetName']))
+    group_on_call = xm_on_call.get_on_call_collection("&groups="+group['targetName'])
+    log.info("Received On Call Schedule for Group: " + json.dumps(group_on_call))
+```
+
 ### pyxmatters/util
 This directory contains misc. utilities that provide benefits to users executing ETL processes with pyxmatters.
 
