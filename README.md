@@ -430,7 +430,6 @@ Before updating GitHub:
 
 References:
 * https://pypi.org/project/twine/
-* https://stackoverflow.com/questions/52016336/how-to-upload-new-versions-of-project-to-pypi-with-twine
 
 ### Testing locally
 To test locally uninstall the package by:
