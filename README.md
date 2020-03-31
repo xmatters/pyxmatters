@@ -2,7 +2,7 @@
 pyxmatters is a python3 sdk that provides a RESTful interface with xMatters. Additionally there are capabilities to interface with csv files.
 
 ## Install, Upgrades, and use of pyxmatters
-For Production use it is **strongly** recommended to download the pyxmatters package locally from GitHub, specifically the `xmatters` directory, and set the `xmatters` directory alongside the script leveraging it. For use locally, just enter `import xmatters` at the top of the calling script as documented in the steps below. 
+For Production use it is **strongly** recommended to download the pyxmatters package locally from GitHub, specifically the `xmatters` directory, and set the `xmatters` directory alongside the script leveraging it. For use locally, just enter `import xmatters` at the top of the calling script as documented in the steps below. This is the same procedure as if it was downloaded using pip. Also, this SDK is a work in progress, not all REST API's are wrapped, so there is additional value in having a local copy to modify as needed. 
 
 For installing locally with the understanding the package will change and could break your script, follow the steps below:
 
@@ -12,12 +12,26 @@ To Install via pip, navigate to the terminal and enter:
 To Upgrade via pip, navigate to terminal and enter:
 * `sudo pip3 install --upgrade --force-reinstall pyxmatters`
 
+## Working Projects
+For implementation in a working project see: https://github.com/matthewhenry1/integrator_py
+
 ## Overview of the pyxmatters package
 
 ### pyxmatters/rest
 This directory provides user, device, group, and site rest api capabilities.
 
 #### pyxmatters/rest/person.py
+For specific method signature detail see the file documented above for specifics.
+
+Below is an example of interfacing with `xMattersPerson`. Below are the methods available:
+* get_person: Accepts the username or user id as well as an optional url filter string i.e. ?embed=roles,supervisors
+* get_people: Accepts an optional url filter string, i.e. ?embed=roles,devices&offset=0&limit=1000
+* create_person: Requires the json object to create the xMatters record as documented on the xMatters REST API
+* modify_person: Requires the json object to create the xMatters record as documented on the xMatters REST API
+* remove_person: Requires the users id 
+* get_people_collection: A single threaded process to return all users from an instance, there is no limit on what is returned, the process will loop for all records requested. So if there are 60k records in the instance, all records will be returned. To refine the search this function also accepts an optional url filter string, i.e. &embed=roles&roles=Standard User
+
+Script Example:
 ```
 import xmatters
 import logging
@@ -36,6 +50,14 @@ xm_person.remove_person('username')
 ```
 
 #### pyxmatters/rest/device.py
+For specific method signature detail see the file documented above for specifics.
+
+Below is an example of interfacing with `xMattersDevice`. Below are the methods available:
+* get_device: Accepts the device id as well as an optional url filter string i.e. ?embed=timeframes
+* get_devices: Accepts an optional url filter string, i.e. ?embed=timeframes
+* create_device: Requires the json object to create the xMatters record as documented on the xMatters REST API
+* modify_device: Requires the json object to create the xMatters record as documented on the xMatters REST API
+* remove_device: Requires the device id 
 
 ```
 import xmatters
@@ -51,10 +73,17 @@ log.info("Starting Process")
 user_id = xm_person.get_person('username')['id'] # needed for device creation
 xm_device.create_device({'name': 'Work Email', 'emailAddress': 'user@xmatters.com', 'deviceType': 'EMAIL', 'owner': user_id})
 xm_device.get_devices()
-# other options available as well
 ```
 
 #### pyxmatters/rest/group.py
+Below is an example of interfacing with `xMattersGroup`. Below are the methods available:
+* get_group: Accepts the group name or group id as well as an optional url filter string i.e. ?embed=supervisors
+* get_groups: Accepts an optional url filter string, i.e. ?offset=0&limit=1000
+* create_group: Requires the json object to create the xMatters record as documented on the xMatters REST API
+* modify_group: Requires the json object to create the xMatters record as documented on the xMatters REST API
+* remove_group: Requires the group id 
+* get_group_collection: A single threaded process to return all records from an instance, there is no limit on what is returned, the process will loop for all records requested. So if there are 60k records in the instance, all records will be returned. To refine the search this function also accepts an optional url filter string, i.e. status=ACTIVE
+
 ```
 import xmatters
 import logging
@@ -238,12 +267,14 @@ time.sleep(1)
 end = time_util.get_time_now()
 print("Process Duration: " + time_util.get_diff(end, start))
 ```
-## Working Projects
-For implementation in a working project see: https://github.com/matthewhenry1/integrator_py
-
-
 
 ## Notes For Contributors
+
+### Variables, Methods, Classes, and File Names
+* Variables: should always be lower case and separated by `_`. Do not use camel casing.
+* Methods: should always be lower case and separated by `_`. Do not use camel casing.
+* Classes: PyCharm and Python oriented editors will always bark at the `xMatters` prefix, but keep consistent with the standard of `xMatters<purpose>` i.e. `xMattersPerson`
+* Keep consistent with short and brief file names, all lower case and separated by `_`. Do not use camel casing.
 
 ### Uploading
 `wheel` and `twine` are required for packaging and uploading:
