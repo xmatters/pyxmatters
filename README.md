@@ -2,7 +2,7 @@
 pyxmatters is a python3 sdk that provides a RESTful interface with xMatters. Additionally there are capabilities to interface with csv files.
 
 ## Install, Upgrades, and use of pyxmatters
-For Production use it is **strongly** recommended to download the pyxmatters package locally from GitHub, specifically the `xmatters` directory, and set the `xmatters` directory alongside the script leveraging it. For use locally, just enter `import xmatters` at the top of the calling script as documented in the steps below. This is the same procedure as if it was downloaded using pip. Also, this SDK is a work in progress, not all REST API's are wrapped, so there is additional value in having a local copy to modify as needed. 
+For Production use it is **strongly** recommended to download the pyxmatters package locally from GitHub, specifically the `xmatters` directory, and set the `xmatters` directory alongside the script leveraging it. For use locally, just enter `import xmatters` at the top of the calling script as documented in the steps below. This is import is the same procedure as if the package was downloaded using pip. Also, this SDK is a work in progress, not all REST API's are wrapped, so there is additional value in having a local copy to modify as needed. 
 
 For installing locally with the understanding the package will change and could break your script, follow the steps below:
 
@@ -81,6 +81,8 @@ xm_device.get_devices()
 ```
 
 #### pyxmatters/rest/group.py
+For specific method signature detail see the file documented above for specifics.
+
 Below is an example of interfacing with `xMattersGroup`. Below are the methods available:
 * **get_group**: Accepts the group name or group id as well as an optional url filter string i.e. `?embed=supervisors`
 * **get_groups**: Accepts an optional url filter string, i.e. `?offset=0&limit=1000`
@@ -107,6 +109,14 @@ xm_group.remove_group('Test Group')
 ```
 
 #### pyxmatters/rest/shift.py
+For specific method signature detail see the file documented above for specifics.
+
+Below is an example of interfacing with `xMattersShift`. Below are the methods available:
+* **add_member_to_shift**: Requires the group name or group id, shift name or shift id, and the members name or id
+* **get_shift**: Requires the group name or group id and shift name or shift id
+* **get_shifts**: RRequires the group name
+* **create_shift**: Requires the json object to create the xMatters record as documented on the xMatters REST API
+* **delete_shift**: Requires the group name or group id and shift name or shift id
 
 ```
 import xmatters
@@ -126,6 +136,13 @@ xm_shift.delete_shift('Test Group', 'Default Shift')
 ```
 
 #### pyxmatters/rest/roster.py
+For specific method signature detail see the file documented above for specifics.
+
+Below is an example of interfacing with `xMattersRoster`. Below are the methods available:
+* **add_member_to_roster**: Requires the the group name or group id and member name or member id
+* **remove_member_from_roster**: Requires the the group name or group id and member name or member id
+* **get_roster**: Requires the the group name or group id and optionally accepts a url filter string `&offset=0&limit=1000`
+* **get_roster_collection**: Requires the group name or group id
 
 ```
 import xmatters
@@ -144,7 +161,13 @@ xm_roster.get_roster_collection()
 ```
 
 #### pyxmatters/rest/site.py
+For specific method signature detail see the file documented above for specifics.
 
+Below is an example of interfacing with `xMattersSite`. Below are the methods available:
+* **get_site**: Requires the the site name or site id
+* **create_site**: Requires the json object to create the xMatters record as documented on the xMatters REST API
+* **get_sites**: Returns the first 1000 sites
+* **modify_site**: Requires the json object to create the xMatters record as documented on the xMatters REST API
 ```
 import xmatters
 import logging
@@ -162,6 +185,10 @@ xm_site.modify_site({'id': site['id'], 'timezone': 'US/Pacific'})
 ```
 
 #### pyxmatters/rest/oncall.py
+For specific method signature detail see the file documented above for specifics.
+
+Below is an example of interfacing with `xMattersOnCall`. Below are the methods available:
+* **get_on_call_collection**: Accepts a url filter string. By default this function will return all members associated, it will paginate through all shifts and will return all members even if 100. By design this function was built to take care of all processing and paginating for you.
 
 ```
 import xmatters
@@ -183,6 +210,34 @@ for group in groups:
     log.info("Received On Call Schedule for Group: " + json.dumps(group_on_call))
 ```
 
+#### pyxmatters/rest/dynamic_teams.py
+For specific method signature detail see the file documented above for specifics.
+
+Below is an example of interfacing with `xMattersDynamicTeams`. Below are the methods available:
+* **create_dynamic_team**: Requires the json object to create the xMatters record as documented on the xMatters REST API
+
+#### pyxmatters/rest/collection.py
+
+```buildoutcfg
+
+
+member_response = xm_collection.create_collection(xm_shift.add_member_to_shift, new_data, config.thread_count)
+
+```
+
+
+#### pyxmatters/rest/plans.py
+For specific method signature detail see the file documented above for specifics.
+
+Below is an example of interfacing with `xMattersPlans`. Below are the methods available:
+* **get_plan**: Requires the plan id and accepts an optional url filter string
+
+#### pyxmatters/rest/libraries.py
+For specific method signature detail see the file documented above for specifics.
+
+Below is an example of interfacing with `xMattersLibraries`. Below are the methods available:
+* **get_libraries**: Requires the plan id and accepts an optional url filter string
+
 ### pyxmatters/util
 This directory contains misc. utilities that provide benefits to users executing ETL processes with pyxmatters.
 
@@ -192,6 +247,8 @@ column.py is a class responsible for reading csv files. The intent of this class
 The core function leveraged in column.py is get_rows, below are the details for the function
 
 ```
+    Method: def get_rows(self, columns, select=None, distinct=None, delimiter_to_array=None):
+
     columns [Array] (Required): 
         Array of string objects that are to be retrieved from the file i.e.,
         ['targetName', 'roles'] will only return identified headers
@@ -207,6 +264,7 @@ The core function leveraged in column.py is get_rows, below are the details for 
         
     delimiter_to_array [String](Optional): delimiter to be used to split a field value to an array, i.e. 
         if ";" provided: ldavid;jseinfeld --> ['ldavid', 'jseinfeld']
+
 ```
 
 Save the file below as a dynamic_teams.csv in UTF-8 Encoding:
