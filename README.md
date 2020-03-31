@@ -21,9 +21,9 @@ For implementation in a working project see: https://github.com/matthewhenry1/in
 This directory provides user, device, group, and site rest api capabilities.
 
 #### Quick Notes on URL Filters in Methods
-* By default all optional url filters in methods will assign the `?` or `&` by default. So for instance on `xMattersPerson.get_person` method the url filter string can be passed as: `?embed=roles,supervisors`, `&embed=roles,supervisors`, or `embed=roles,supervisors` will work.
-* For any methods that include `collections` i.e. `xMattersPerson.get_person_collection`, `xMattersGroup.get_group_collection`, and `_xMattersRoster.get_roster_collection` by default offset and limit will be stripped and just like the above the assignment of the `?` or `&` will be handled for you by default. So `?status=ACTIVE` or `&status=ACTIVE`, or `status=ACTIVE` will work.
-* Lastly, by default anything that will be leveraged in a URL will be auto encoded, this applies to targetNames, id's, and the aforementioned filters. So `embed=roles&roles=Standard User` is fine to pass to as this will be handled automatically.
+* Check the url filter string in the signature to determine the proper use of `?` or `&`
+* For any methods that include `collections` i.e. `xMattersPerson.get_person_collection`, `xMattersGroup.get_group_collection`, and `_xMattersRoster.get_roster_collection` by default offset and limit will be stripped. Only `&` is supported. So `&status=ACTIVE` or `status=ACTIVE` will work.
+* Lastly, by default anything that will be leveraged in a URL will be auto encoded, this applies to targetNames, id's, and the aforementioned filters. So for `xMattersPerson.get_person_collection` the following `embed=roles&roles=Standard User` is fine to pass to as this will be handled automatically.
 
 #### pyxmatters/rest/person.py
 For specific method signature detail see the file documented above for specifics.
