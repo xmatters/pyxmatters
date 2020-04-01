@@ -11,7 +11,7 @@ from logging.handlers import RotatingFileHandler
 def main() -> object:
 
     xm_person = xmatters.xMattersPerson(environment)
-    user = xm_person.get_people('mmcbride')
+    user = xm_person.get_person('mmcbride')
     log.info("Received user: " + json.dumps(user))
 
 
