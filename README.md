@@ -13,7 +13,7 @@ To Upgrade via pip, navigate to terminal and enter:
 * `sudo pip3 install --upgrade --force-reinstall pyxmatters`
 
 ## Quick Start
-For a quick start sample file, see the [sample](sample/) source directory
+For a quick start sample file, see the [sample](sample/) source directory. If using a local copy of pyxmatters, just set the `xmatters` directory alongside the `config.py` and `sample.py` in the `/sample` directory.
 
 ## Working Projects
 For implementation in a working project see: https://github.com/matthewhenry1/integrator_py
