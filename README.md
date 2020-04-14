@@ -220,6 +220,8 @@ for group in groups:
 ```
 
 #### pyxmatters/rest/collection.py
+
+##### Create, Update, Delete
 Below is an example of leveraging the `xMattersCollection`. This python module is a powerful tool to be used increase throughput when executing updates in xMatters. This process was built only for Create, Modify, and Deletion methods. Getter methods should leverage the aforementioned collection methods that are found in the respective moduldes.
 
 The value of this collection is that it provides the ability to include threading or concurrency. Below is an example of using it. The collection module itself is very dynamic, it will always require:
@@ -295,6 +297,59 @@ log.info("Error Response: " + json.dumps(member_create_response["errors"]))
 # person_remove_response = xm_collection.create_collection(xm_person.remove_person, remove_user_data, max_thread_count)
 # group_remove_response = xm_collection.create_collection(xm_group.remove_group, remove_group_data, max_thread_count)
 
+```
+##### Getter operations
+Below is an example of retrieving information from xMatters
+
+```buildoutcfg
+
+import xmatters
+import logging
+import json
+
+logging.basicConfig(filename="log.log",level=10,datefmt="%m-%d-%Y %H:%M:%S",format="%(asctime)s %(name)s %(levelname)s: %(message)s")
+log = logging.getLogger(__name__)
+
+environment = xmatters.xMattersAPI("https://<instance>.xmatters.com", "rest_username", "rest_password")
+xm_collection = xmatters.xMattersCollection(environment)
+xm_event = xmatters.xMattersEvent(environment)
+max_thread_count = 5
+page_size = 100
+
+today_date = str(datetime.date.today().isoformat())
+# today_date = '2020-04-04'  # uncomment to override above to a past date stamp
+log.info(today_date)
+
+events = xm_event.get_events(
+    'form=' + urllib.parse.quote('&from=' + today_date + urllib.parse.quote('T00:00:00.000Z', safe=''))
+
+log.info('Received events ' + json.dumps(events))
+
+log.info('Getting User Deliveries for ' + str(len(events['data'])))
+current_date_time = datetime.datetime.now()
+
+for event in events['data']:
+
+    event_user_delivery = xm_event.get_user_deliveries(event['id'], 'at=' + str(
+        current_date_time.strftime('%Y-%m-%dT%H:%M:%SZ')) + '&offset=0&limit='+str(page_size))
+
+    if not event_user_delivery:
+        log.info('No log data found for event id ' + event['eventId'] + ' moving to next event id.')
+        continue
+
+    # if above the page size limit execute the collection
+    if event_user_delivery['total'] > config.responses['page_size']:
+        param_data = {
+            "url_filter": 'at=' + str(current_date_time.strftime('%Y-%m-%dT%H:%M:%SZ')),
+            "event_id": event['id']
+        }
+        event_user_delivery_collection = xm_collection.get_collection(xm_event.get_user_deliveries, event_user_delivery['total'], page_size, param_data, max_thread_count)
+        event_user_delivery = event_user_delivery_collection['response']
+    else:  # otherwise continue on with that initial request
+        event_user_delivery = event_user_delivery['data']
+
+    log.debug('Retrieved event_user_delivery data: ' + json.dumps(event_user_delivery))
+    log.info('Retrieved event_user_delivery ' + str(len(event_user_delivery)))
 ```
 
 #### pyxmatters/rest/dynamic_teams.py
