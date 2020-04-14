@@ -18,3 +18,5 @@ class TimeCalc(object):
         minutes = divmod(hours[1], 60)                # Use remainder of hours to calc minutes
         seconds = divmod(minutes[1], 1)               # Use remainder of minutes to calc seconds
         return "%d days, %d hours, %d minutes and %d seconds" % (days[0], hours[0], minutes[0], seconds[0])
+
+
